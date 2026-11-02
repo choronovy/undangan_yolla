@@ -1,0 +1,27 @@
+[
+  {
+    "id": "guest_1",
+    "name": "Dimas Prasetya & Partner",
+    "phone": "6281234567890",
+    "category": "Sahabat",
+    "url": "index.html?to=Dimas+Prasetya+%26+Partner",
+    "created_at": "2026-11-01 10:00:00"
+  },
+  {
+    "id": "guest_2",
+    "name": "Bpk. Ir. Bambang Hermanto & Keluarga",
+    "phone": "6281987654321",
+    "category": "Keluarga",
+    "url": "index.html?to=Bpk.+Ir.+Bambang+Hermanto+%26+Keluarga",
+    "created_at": "2026-11-01 11:30:00"
+  },
+  {
+    "id": "guest_3",
+    "name": "Alisa Maharani, S.Kom & Partner",
+    "phone": "6285712345678",
+    "category": "Rekan Kerja",
+    "url": "index.html?to=Alisa+Maharani%2C+S.Kom+%26+Partner",
+    "created_at": "2026-11-01 14:15:00"
+  }
+]
+

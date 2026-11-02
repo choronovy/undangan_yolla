@@ -1,0 +1,38 @@
+[
+  {
+    "id": "wish_viryo_1",
+    "name": "Viryo",
+    "status": "hadir",
+    "message": "test",
+    "created_at": "2026-11-02 15:40:00"
+  },
+  {
+    "id": "wish_1730528000_1",
+    "name": "Bpk. Hendra & Keluarga",
+    "status": "hadir",
+    "message": "Barakallahu lakuma wa baraka 'alaikuma wa jama'a bainakuma fii khoir. Selamat menempuh hidup baru untuk Rudi & Yola, semoga senantiasa diberkahi kebahagiaan dan menjadi keluarga sakinah mawaddah warahmah.",
+    "created_at": "2026-11-01 10:15:00"
+  },
+  {
+    "id": "wish_1730528000_2",
+    "name": "Sarah Amalia & Partner",
+    "status": "hadir",
+    "message": "Happy wedding Yola & mas Rudi! MasyaAllah lancar-lancar sampai hari H yaa. Bahagia selalu berdua sampai maut memisahkan. Can't wait to see both of you on the stage!",
+    "created_at": "2026-11-01 14:40:00"
+  },
+  {
+    "id": "wish_1730528000_3",
+    "name": "Dimas Prasetya",
+    "status": "hadir",
+    "message": "Selamat brother Rudi dan mba Yola! Turut berbahagia atas pernikahan kalian. Semoga samawa dan selalu dilimpahi rezeki yang berkah.",
+    "created_at": "2026-11-02 08:30:00"
+  },
+  {
+    "id": "wish_1730528000_4",
+    "name": "Anindya Putri",
+    "status": "tidak_hadir",
+    "message": "Selamat menempuh hidup baru Rudi dan Yola! Semoga acaranya berlangsung lancar tanpa kendala apapun. Mohon maaf belum bisa hadir yaa.",
+    "created_at": "2026-11-02 11:20:00"
+  }
+]
+

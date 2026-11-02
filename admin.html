@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Admin Dashboard | Kelola Generator &amp; Percakapan | Rudi &amp; Yola</title>
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#43617b',
+            'primary-dark': '#1d3d55',
+            'primary-light': '#89a8c4',
+            secondary: '#c59b27',
+            'secondary-light': '#e8c17b',
+            surface: '#faf9f7',
+            'pastel-blue': '#f0f5fa',
+            'pastel-border': '#dce8f4'
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS terpisah -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans selection:bg-[#cbe6ff] selection:text-primary">
+
+  <!-- ==============================================================
+       1. LOGIN MODAL (USERNAME: admin & PASSWORD: infix)
+       ============================================================== -->
+  <div id="admin-login-section" class="fixed inset-0 z-50 bg-[#1d3d55]/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 text-center space-y-5 animate-scale-up">
+      <!-- Monogram -->
+      <div class="w-16 h-16 rounded-full border-2 border-secondary bg-surface flex items-center justify-center mx-auto shadow-md">
+        <span class="font-serif text-lg font-bold text-secondary">R&amp;Y</span>
+      </div>
+
+      <div>
+        <h2 class="font-serif text-xl sm:text-2xl font-bold text-[#1d3d55]">Admin Login</h2>
+        <p class="text-xs text-slate-500 mt-1">Panel Kelola Generator &amp; Percakapan Tamu</p>
+      </div>
+
+      <form id="admin-login-form" class="space-y-3.5 pt-1 text-left">
+        <!-- Input Username -->
+        <div>
+          <label for="admin-username" class="block text-xs font-semibold text-slate-700 mb-1">Username</label>
+          <div class="relative">
+            <span class="material-symbols-outlined text-slate-400 text-lg absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">person</span>
+            <input type="text" id="admin-username" required placeholder="Masukkan username" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+          </div>
+        </div>
+
+        <!-- Input Password -->
+        <div>
+          <label for="admin-password" class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+          <div class="relative">
+            <span class="material-symbols-outlined text-slate-400 text-lg absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">lock</span>
+            <input type="password" id="admin-password" required placeholder="Masukkan password" class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+            <button type="button" id="btn-toggle-pwd" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5" title="Lihat/Sembunyikan Password">
+              <span class="material-symbols-outlined text-lg" id="pwd-icon">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Error Msg -->
+        <p id="login-error-msg" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2 rounded-xl text-center font-medium"></p>
+
+        <!-- Submit Button -->
+        <button id="btn-admin-login" type="submit" class="w-full py-2.5 bg-primary hover:bg-[#344f67] text-white rounded-xl text-xs font-semibold uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer mt-2">
+          <span class="material-symbols-outlined text-sm">login</span>
+          <span>Masuk ke Dashboard</span>
+        </button>
+
+        <div class="pt-2 text-center">
+          <a href="index.html" class="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-primary transition-colors">
+            <span class="material-symbols-outlined text-xs">arrow_back</span>
+            <span>Kembali ke Halaman Undangan Tamu</span>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       2. DASHBOARD SECTION (UTAMA)
+       ============================================================== -->
+  <div id="admin-dashboard-section" class="hidden flex-1 flex flex-col">
+
+    <!-- TOP HEADER -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+      <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full border border-secondary bg-surface flex items-center justify-center shadow-xs">
+            <span class="font-serif text-xs font-bold text-secondary">R&amp;Y</span>
+          </div>
+          <div>
+            <h1 class="font-serif text-sm sm:text-base font-bold text-[#1d3d55] leading-tight flex items-center gap-1.5">
+              <span>Admin Undangan Rudi &amp; Yola</span>
+              <span class="live-badge-dot"></span>
+            </h1>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest">Sistem Aktif &bull; Laragon Localhost</p>
+          </div>
+        </div>
+
+        <!-- Quick Links & Logout -->
+        <div class="flex items-center gap-2">
+          <a href="index.html" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-700 hover:bg-slate-50 font-medium flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-[15px]">open_in_new</span>
+            <span class="hidden sm:inline">Lihat Undangan</span>
+          </a>
+          <button id="btn-admin-logout" type="button" class="px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer" title="Keluar">
+            <span class="material-symbols-outlined text-[16px]">logout</span>
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- NAVIGATION TABS -->
+      <div class="max-w-6xl mx-auto px-4 flex border-t border-slate-100 overflow-x-auto gap-2">
+        <button type="button" class="admin-tab-btn active px-4 py-2.5 text-xs font-semibold border-b-2 border-primary text-primary flex items-center gap-1.5 cursor-pointer" data-tab="tab-percakapan">
+          <span class="material-symbols-outlined text-[17px]">forum</span>
+          <span>Percakapan &amp; Doa</span>
+        </button>
+
+        <button type="button" class="admin-tab-btn px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 cursor-pointer" data-tab="tab-generator">
+          <span class="material-symbols-outlined text-[17px]">link</span>
+          <span>Generator Undangan &amp; Buku Tamu</span>
+        </button>
+
+        <button type="button" class="admin-tab-btn px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 cursor-pointer" data-tab="tab-settings">
+          <span class="material-symbols-outlined text-[17px]">settings</span>
+          <span>Pengaturan Acara</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN BODY -->
+    <main class="max-w-6xl mx-auto w-full p-4 sm:p-6 space-y-6 flex-1">
+
+      <!-- ==============================================================
+           TAB 1: KELOLA PERCAKAPAN & DOA (WISHES & RSVP)
+           ============================================================== -->
+      <div id="tab-percakapan" class="admin-tab-content space-y-6">
+        <!-- 4 KPI STATS CARDS -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <!-- Total Ucapan -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-blue-50 text-primary flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-2xl">chat_bubble</span>
+            </div>
+            <div class="min-w-0">
+              <p class="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Total Percakapan</p>
+              <h3 id="stat-total-wishes" class="text-xl sm:text-2xl font-bold text-[#1d3d55]">0</h3>
+            </div>
+          </div>
+
+          <!-- Hadir -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-2xl">check_circle</span>
+            </div>
+            <div class="min-w-0">
+              <p class="text-[11px] text-emerald-700 uppercase tracking-wider font-semibold">Konfirmasi Hadir</p>
+              <h3 id="stat-hadir" class="text-xl sm:text-2xl font-bold text-emerald-700">0</h3>
+            </div>
+          </div>
+
+          <!-- Tidak Hadir -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-2xl">cancel</span>
+            </div>
+            <div class="min-w-0">
+              <p class="text-[11px] text-rose-700 uppercase tracking-wider font-semibold">Tidak Hadir</p>
+              <h3 id="stat-tidak-hadir" class="text-xl sm:text-2xl font-bold text-rose-700">0</h3>
+            </div>
+          </div>
+
+          <!-- Total Tamu Terdata -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-2xl">group</span>
+            </div>
+            <div class="min-w-0">
+              <p class="text-[11px] text-purple-700 uppercase tracking-wider font-semibold">Buku Tamu Terdata</p>
+              <h3 id="stat-total-guests" class="text-xl sm:text-2xl font-bold text-purple-700">0</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- TABEL UCAPAN & DOA (GUESTBOOK MANAGEMENT) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden space-y-0">
+          <!-- Table Toolbar -->
+          <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-sm sm:text-base font-bold text-[#1d3d55] flex items-center gap-1.5">
+                <span>Daftar Pesan, Percakapan &amp; Doa Tamu</span>
+                <span class="live-badge-dot"></span>
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Tersinkronisasi otomatis dengan database <code class="font-mono bg-slate-100 px-1 rounded text-primary">wishes.json</code></p>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex items-center flex-wrap gap-2">
+              <!-- Filter Status -->
+              <select id="filter-status" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 outline-none cursor-pointer">
+                <option value="all">Semua Status</option>
+                <option value="hadir">Hanya Hadir</option>
+                <option value="tidak_hadir">Tidak Hadir</option>
+              </select>
+
+              <!-- Search Input -->
+              <input type="text" id="search-input" placeholder="Cari nama / pesan..." class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none w-36 sm:w-48 focus:ring-1 focus:ring-primary">
+
+              <!-- Refresh Button -->
+              <button id="btn-refresh-data" type="button" class="p-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-600 transition-colors" title="Muat Ulang Data">
+                <span class="material-symbols-outlined text-[18px]">refresh</span>
+              </button>
+
+              <!-- Export to CSV / Excel Button -->
+              <button id="btn-export-csv" type="button" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors shadow-xs cursor-pointer">
+                <span class="material-symbols-outlined text-[16px]">file_download</span>
+                <span>Export CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50/80 text-slate-500 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-200">
+                  <th class="py-3 px-4 w-12 text-center">No</th>
+                  <th class="py-3 px-4">Nama Tamu</th>
+                  <th class="py-3 px-4">Kehadiran</th>
+                  <th class="py-3 px-4">Isi Pesan &amp; Doa</th>
+                  <th class="py-3 px-4">Waktu Kirim</th>
+                  <th class="py-3 px-4 text-right w-24">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="wishes-table-body">
+                <tr>
+                  <td colspan="6" class="text-center py-8 text-slate-400 text-xs">Memuat data ucapan...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==============================================================
+           TAB 2: KELOLA GENERATOR UNDANGAN & BUKU TAMU
+           ============================================================== -->
+      <div id="tab-generator" class="admin-tab-content hidden space-y-6">
+        
+        <!-- GENERATOR LINK CARD -->
+        <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-4">
+          <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-xl">person_add</span>
+              <h2 class="text-sm sm:text-base font-bold text-[#1d3d55]">Buat Link Undangan Tamu (Generator)</h2>
+            </div>
+            <button id="btn-toggle-bulk-modal" type="button" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer">
+              <span class="material-symbols-outlined text-sm">playlist_add</span>
+              <span>Tambah Banyak (Bulk Add)</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+            <!-- Nama Tamu -->
+            <div>
+              <label for="gen-guest-name" class="block text-xs font-semibold text-slate-700 mb-1">
+                Nama Tamu / Penerima <span class="text-rose-500">*</span>
+              </label>
+              <input type="text" id="gen-guest-name" placeholder="Contoh: Dimas Prasetya" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none transition-all">
+            </div>
+
+            <!-- Sapaan / Sebutan -->
+            <div>
+              <label for="gen-guest-suffix" class="block text-xs font-semibold text-slate-700 mb-1">
+                Sapaan / Tambahan
+              </label>
+              <select id="gen-guest-suffix" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none bg-white">
+                <option value="& Partner">&amp; Partner</option>
+                <option value="& Keluarga">&amp; Keluarga</option>
+                <option value="di Tempat">di Tempat</option>
+                <option value="Spesial">Spesial</option>
+                <option value="">Tanpa Tambahan (Nama Saja)</option>
+              </select>
+            </div>
+
+            <!-- Kategori / Hubungan -->
+            <div>
+              <label for="gen-guest-category" class="block text-xs font-semibold text-slate-700 mb-1">
+                Kategori Tamu
+              </label>
+              <select id="gen-guest-category" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none bg-white">
+                <option value="Sahabat">Sahabat</option>
+                <option value="Keluarga">Keluarga</option>
+                <option value="Rekan Kerja">Rekan Kerja</option>
+                <option value="VIP">Tamu VIP</option>
+                <option value="Umum">Umum</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- WhatsApp Number (Optional) -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+            <div class="md:col-span-2">
+              <label for="gen-guest-phone" class="block text-xs font-semibold text-slate-700 mb-1">
+                Nomor WhatsApp (Opsional, untuk kirim WA langsung)
+              </label>
+              <div class="relative">
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400">+62</span>
+                <input type="tel" id="gen-guest-phone" placeholder="81234567890 (tanpa angka 0 di depan)" class="w-full pl-12 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none transition-all">
+              </div>
+            </div>
+
+            <div class="flex items-end">
+              <button id="btn-generate-guest" type="button" class="w-full py-2.5 bg-primary hover:bg-[#344f67] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-sm">bolt</span>
+                <span>Generate &amp; Simpan Tamu</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- RESULT CONTAINER -->
+          <div id="gen-result-card" class="hidden bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4">
+            <!-- URL Hasil -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan Undangan Khusus Tamu:</label>
+              <div class="flex items-center gap-2">
+                <input type="text" id="gen-output-url" readonly class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-mono text-slate-700 select-all outline-none">
+                <button type="button" id="btn-copy-gen-url" class="px-4 py-2 bg-slate-800 hover:bg-black text-white rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors whitespace-nowrap cursor-pointer">
+                  <span class="material-symbols-outlined text-sm">content_copy</span>
+                  <span>Salin Link</span>
+                </button>
+                <a id="btn-preview-gen-url" href="#" target="_blank" class="px-3 py-2 bg-white border border-slate-200 hover:bg-slate-100 text-primary rounded-xl text-xs font-medium flex items-center gap-1 transition-colors whitespace-nowrap">
+                  <span class="material-symbols-outlined text-sm">open_in_new</span>
+                  <span>Buka</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- WhatsApp Message Preview -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-xs font-semibold text-slate-700">Format Pesan WhatsApp Siap Kirim:</label>
+                <button type="button" id="btn-copy-wa-text" class="text-xs text-primary font-semibold hover:underline flex items-center gap-1 cursor-pointer">
+                  <span class="material-symbols-outlined text-sm">copy_all</span>
+                  <span>Salin Seluruh Pesan</span>
+                </button>
+              </div>
+              <textarea id="gen-output-wa" rows="6" readonly class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs font-sans text-slate-700 leading-relaxed outline-none resize-none"></textarea>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-2">
+              <a id="btn-send-whatsapp" href="#" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-sm">chat</span>
+                <span>Kirim Langsung via WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAFTAR BUKU TAMU TERUNDANG -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden space-y-0">
+          <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-sm sm:text-base font-bold text-[#1d3d55] flex items-center gap-1.5">
+                <span>Daftar Buku Tamu Terundang</span>
+                <span id="badge-total-guests" class="px-2 py-0.5 rounded-full bg-blue-50 text-primary text-xs font-bold border border-blue-200">0 Tamu</span>
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Daftar tamu tersimpan di <code class="font-mono bg-slate-100 px-1 rounded text-primary">guests.json</code></p>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+              <input type="text" id="search-guest-input" placeholder="Cari nama tamu..." class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none w-36 sm:w-48 focus:ring-1 focus:ring-primary">
+              <button id="btn-export-guests-csv" type="button" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors shadow-xs cursor-pointer">
+                <span class="material-symbols-outlined text-[16px]">file_download</span>
+                <span>Export Tamu (CSV)</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50/80 text-slate-500 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-200">
+                  <th class="py-3 px-4 w-12 text-center">No</th>
+                  <th class="py-3 px-4">Nama Tamu Undangan</th>
+                  <th class="py-3 px-4">Kategori</th>
+                  <th class="py-3 px-4">WhatsApp</th>
+                  <th class="py-3 px-4">Tautan Personal</th>
+                  <th class="py-3 px-4 text-right w-24">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="guests-table-body">
+                <tr>
+                  <td colspan="6" class="text-center py-8 text-slate-400 text-xs">Memuat daftar tamu...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==============================================================
+           TAB 3: PENGATURAN ACARA (EVENT SETTINGS)
+           ============================================================== -->
+      <div id="tab-settings" class="admin-tab-content hidden space-y-6">
+        <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-5">
+          <div class="border-b border-slate-100 pb-3">
+            <h2 class="text-sm sm:text-base font-bold text-[#1d3d55]">Pengaturan Informasi Acara 29 November 2026</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Sistem otomatis menampilkan lokasi ini kepada tamu setelah tanggal 27 November 2026</p>
+          </div>
+
+          <form id="settings-form" class="space-y-4 max-w-xl">
+            <div>
+              <label for="setting-venue-29" class="block text-xs font-semibold text-slate-700 mb-1">Nama Gedung / Ballroom (29 Nov)</label>
+              <input type="text" id="setting-venue-29" placeholder="Contoh: Grand Ballroom Hotel Santika Premiere" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none">
+            </div>
+
+            <div>
+              <label for="setting-address-29" class="block text-xs font-semibold text-slate-700 mb-1">Alamat Lengkap</label>
+              <textarea id="setting-address-29" rows="3" placeholder="Contoh: Jl. Hayam Wuruk No. 125, Jakarta Barat" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none resize-none"></textarea>
+            </div>
+
+            <div>
+              <label for="setting-maps-29" class="block text-xs font-semibold text-slate-700 mb-1">Tautan Google Maps</label>
+              <input type="url" id="setting-maps-29" placeholder="https://maps.google.com/..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none">
+            </div>
+
+            <button type="submit" id="btn-save-settings" class="px-5 py-2.5 bg-primary hover:bg-[#344f67] text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-sm">save</span>
+              <span>Simpan Pengaturan</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+      &copy; 2026 Admin Undangan Rudi &amp; Yola &bull; Sistem Berjalan di Localhost Laragon
+    </footer>
+
+  </div>
+
+  <!-- ==============================================================
+       MODAL BULK ADD GUESTS (TAMBAH BANYAK TAMU SEKALIGUS)
+       ============================================================== -->
+  <div id="bulk-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-xl">playlist_add</span>
+          <h3 class="text-sm font-bold text-[#1d3d55]">Tambah Banyak Tamu Sekaligus (Bulk Add)</h3>
+        </div>
+        <button id="btn-close-bulk-modal" type="button" class="text-slate-400 hover:text-slate-600 p-1">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <p class="text-xs text-slate-500">
+          Tempelkan (*paste*) daftar nama tamu undangan, <strong>satu baris untuk setiap nama</strong>:
+        </p>
+
+        <textarea id="bulk-names-input" rows="7" placeholder="Contoh:&#10;Bpk. Bambang Hermanto&#10;Ibu Ratna Sari&#10;Dimas Prasetya&#10;Alisa Maharani" class="w-full p-3 rounded-xl border border-slate-200 text-xs font-mono outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1">Tambahkan Akhiran Sapaan</label>
+            <select id="bulk-suffix-select" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white">
+              <option value="& Partner">&amp; Partner</option>
+              <option value="& Keluarga">&amp; Keluarga</option>
+              <option value="di Tempat">di Tempat</option>
+              <option value="">Tanpa Tambahan</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1">Kategori</label>
+            <select id="bulk-category-select" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white">
+              <option value="Umum">Umum</option>
+              <option value="Sahabat">Sahabat</option>
+              <option value="Keluarga">Keluarga</option>
+              <option value="Rekan Kerja">Rekan Kerja</option>
+              <option value="VIP">VIP</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button id="btn-cancel-bulk" type="button" class="px-4 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-medium cursor-pointer">
+            Batal
+          </button>
+          <button id="btn-submit-bulk" type="button" class="px-5 py-2 bg-primary hover:bg-[#344f67] text-white rounded-xl text-xs font-semibold flex items-center gap-1 shadow-sm cursor-pointer">
+            <span class="material-symbols-outlined text-sm">add_circle</span>
+            <span>Simpan Semua Tamu</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Script JS terpisah -->
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>
