@@ -1,5 +1,5 @@
 /**
- * Undangan Digital Elegan - Rudi & Yola
+ * Undangan Digital Elegan - Rudi & Yolla
  * Script Utama: Amplop, Countdown, Auto-Update Lokasi 27/29 Nov, Musik, & Live Guestbook JSON
  */
 
@@ -36,9 +36,14 @@
   // ==========================================
   const audio = document.getElementById('wedding-audio');
   const musicToggleBtn = document.getElementById('music-toggle-btn');
-  const musicDisc = document.getElementById('music-disc');
   const musicBars = document.querySelectorAll('.music-bar');
   let isPlaying = false;
+
+  // Set initial state paused
+  musicBars.forEach(bar => {
+    bar.style.animationPlayState = 'paused';
+    bar.style.opacity = '0.85';
+  });
 
   function toggleMusic(playState) {
     if (!audio) return;
@@ -46,16 +51,28 @@
     if (playState === true || (playState === undefined && audio.paused)) {
       audio.play().then(() => {
         isPlaying = true;
-        if (musicDisc) musicDisc.classList.remove('animate-paused');
-        musicBars.forEach(bar => bar.style.animationPlayState = 'running');
+        if (musicToggleBtn) {
+          musicToggleBtn.classList.remove('opacity-60');
+          musicToggleBtn.classList.add('opacity-100');
+        }
+        musicBars.forEach(bar => {
+          bar.style.animationPlayState = 'running';
+          bar.style.opacity = '1';
+        });
       }).catch((err) => {
         console.warn('Autoplay dicegah oleh browser:', err);
       });
     } else {
       audio.pause();
       isPlaying = false;
-      if (musicDisc) musicDisc.classList.add('animate-paused');
-      musicBars.forEach(bar => bar.style.animationPlayState = 'paused');
+      if (musicToggleBtn) {
+        musicToggleBtn.classList.add('opacity-60');
+        musicToggleBtn.classList.remove('opacity-100');
+      }
+      musicBars.forEach(bar => {
+        bar.style.animationPlayState = 'paused';
+        bar.style.opacity = '0.7';
+      });
     }
   }
 
@@ -153,18 +170,13 @@
         event29Card.classList.add('ring-2', 'ring-primary', 'shadow-lg');
         const badgeEl = event29Card.querySelector('.event-badge');
         if (badgeEl) {
-          badgeEl.className = 'event-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-600 text-white animate-pulse';
+          badgeEl.className = 'event-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-600 text-white animate-pulse whitespace-nowrap';
           badgeEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-white"></span> <span>Lokasi & Acara Terkini</span>';
         }
       }
 
       if (statusPill) {
-        statusPill.innerHTML = `
-          <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-900 text-xs font-medium">
-            <span class="live-badge-dot"></span>
-            <strong>Update Terkini:</strong> Lokasi & Acara Diperbarui untuk 29 November 2026
-          </span>
-        `;
+        statusPill.innerHTML = '';
       }
 
       if (countdownTargetText) {
@@ -173,7 +185,7 @@
       if (heroCountdownLabel) heroCountdownLabel.textContent = 'Menuju Resepsi (29 Nov 2026)';
 
       if (calendarBtn) {
-        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Resepsi+Pernikahan+Rudi+%26+Yola+(Sesi+2)&dates=20261129T030000Z/20261129T090000Z&details=Resepsi+Pernikahan+Rudi+Dananjaya+%26+Yola+Anindita+Sesi+2&location=Ballroom+Hotel+Santika+Premiere,+Jakarta";
+        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Resepsi+Pernikahan+Rudi+%26+Yolla+(Sesi+2)&dates=20261129T030000Z/20261129T090000Z&details=Resepsi+Pernikahan+Rudi+Rusyandi+%26+Yolla+Sri+Nur+Juwita+Sesi+2&location=Kp.+Sindangelet+Jl.+Raya+Cisayong+No.184,+Sukaraharja,+Cisayong,+Kabupaten+Tasikmalaya";
       }
     } else {
       // State: Sebelum 27 November 2026 -> Fokus Acara 27 November 2026
@@ -181,8 +193,16 @@
         event27Card.classList.remove('opacity-75', 'bg-slate-50');
         const badgeEl = event27Card.querySelector('.event-badge');
         if (badgeEl) {
-          badgeEl.className = 'event-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800';
-          badgeEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> <span>Akad & Resepsi Utama</span>';
+          badgeEl.className = 'event-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 whitespace-nowrap';
+          badgeEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> <span>Kumpul Keluarga</span>';
+        }
+      }
+
+      if (event29Card) {
+        const badge29 = event29Card.querySelector('.event-badge');
+        if (badge29) {
+          badge29.className = 'event-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-100 text-blue-800 whitespace-nowrap';
+          badge29.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-600 flex-shrink-0"></span> <span>Rumah Mempelai Pria</span>';
         }
       }
 
@@ -192,16 +212,11 @@
       if (heroCountdownLabel) heroCountdownLabel.textContent = 'Menuju Hari Bahagia (27 Nov 2026)';
 
       if (statusPill) {
-        statusPill.innerHTML = `
-          <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-medium">
-            <span class="material-symbols-outlined text-sm text-primary">info</span>
-            Jadwal Utama: 27 November 2026 (Lokasi otomatis update pada 27 Nov untuk agenda 29 Nov)
-          </span>
-        `;
+        statusPill.innerHTML = '';
       }
 
       if (calendarBtn) {
-        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Pernikahan+Rudi+%26+Yola&dates=20261127T010000Z/20261127T080000Z&details=Akad+dan+Resepsi+Pernikahan+Rudi+Dananjaya+%26+Yola+Anindita&location=The+Manor+Andara,+Jakarta";
+        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Pernikahan+Rudi+%26+Yolla&dates=20261127T010000Z/20261127T080000Z&details=Akad+dan+Resepsi+Pernikahan+Rudi+Rusyandi+%26+Yolla+Sri+Nur+Juwita&location=Rancageneng+2,+Sukajaya,+Kec.+Bungursari,+Kota+Tasikmalaya";
       }
     }
   }
@@ -321,7 +336,10 @@
   // ==========================================
   let knownWishes = [];
   const WISHES_JSON_URL = 'wishes.json';
-  const LOCAL_STORAGE_KEY = 'wedding_wishes_data';
+  const LOCAL_STORAGE_KEY = 'wedding_wishes_data_v2';
+  try {
+    localStorage.removeItem('wedding_wishes_data');
+  } catch (e) {}
 
   // Broadcast channel untuk sinkronisasi antar tab secara instan tanpa reload
   let liveChannel = null;
@@ -331,12 +349,18 @@
       if (event.data && (event.data.type === 'NEW_WISH' || event.data.type === 'DELETE_WISH' || event.data.type === 'UPDATE_WISHES')) {
         fetchWishes(true);
       }
+      if (event.data && event.data.type === 'UPDATE_SETTINGS') {
+        loadDynamicEvent29Settings();
+      }
     };
   } catch (e) {}
 
   window.addEventListener('storage', (e) => {
     if (e.key === LOCAL_STORAGE_KEY) {
       fetchWishes(true);
+    }
+    if (e.key === 'wedding_settings_data') {
+      loadDynamicEvent29Settings();
     }
   });
 
@@ -473,15 +497,34 @@
     }
   }
 
-  // Fetch data ucapan langsung dari wishes.json & localStorage
+  // Fetch data ucapan: Utamakan Supabase Cloud, fallback ke wishes.json & localStorage
   async function fetchWishes(silent = false) {
     let baseWishes = [];
-    try {
-      const res = await fetch(WISHES_JSON_URL + '?t=' + Date.now());
-      if (res.ok) {
-        baseWishes = await res.json();
+
+    // 1. Coba ambil dari Supabase Cloud jika terkonfigurasi
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      try {
+        const { data, error } = await supabaseClient
+          .from('wishes')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && Array.isArray(data)) {
+          baseWishes = data;
+        }
+      } catch (err) {
+        console.warn('[Supabase] Gagal fetch data dari cloud:', err);
       }
-    } catch (e) {}
+    }
+
+    // 2. Fallback offline / local JSON jika Supabase belum terisi atau kosong
+    if (!baseWishes || baseWishes.length === 0) {
+      try {
+        const res = await fetch(WISHES_JSON_URL + '?t=' + Date.now());
+        if (res.ok) {
+          baseWishes = await res.json();
+        }
+      } catch (e) {}
+    }
 
     // Ambil data dari localStorage
     let storedWishes = [];
@@ -524,7 +567,7 @@
     }
   }
 
-  // Kirim Ucapan Baru (Murni JSON + LocalStorage Real-time)
+  // Kirim Ucapan Baru (Simpan ke Supabase Cloud + LocalStorage Real-time)
   async function submitWish(e) {
     e.preventDefault();
     const nameInput = document.getElementById('wish-name-input');
@@ -554,7 +597,23 @@
       created_at: getLocalTimestamp()
     };
 
-    // Masukkan ke paling atas
+    // 1. Simpan ke Supabase Cloud Database jika terhubung
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      try {
+        const { error } = await supabaseClient.from('wishes').insert([{
+          id: newWish.id,
+          name: newWish.name,
+          status: newWish.status,
+          message: newWish.message,
+          created_at: new Date().toISOString()
+        }]);
+        if (error) console.warn('[Supabase Insert Error]', error);
+      } catch (err) {
+        console.warn('[Supabase] Gagal menyimpan ke cloud:', err);
+      }
+    }
+
+    // 2. Simpan lokal di state & localStorage untuk feedback instan
     knownWishes.unshift(newWish);
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(knownWishes));
@@ -579,12 +638,26 @@
     }
   }
 
-  // Polling Live Server setiap 4 detik untuk deteksi ucapan baru tanpa reload
+  // Polling & Supabase Real-time Channel Listener
   function startLiveWishesPolling() {
     fetchWishes(true);
+
+    // Jika Supabase aktif, pasang realtime websocket subscription
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      try {
+        supabaseClient
+          .channel('realtime_public_wishes')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'wishes' }, () => {
+            fetchWishes(true);
+          })
+          .subscribe();
+      } catch (e) {}
+    }
+
+    // Fallback interval polling
     setInterval(() => {
       fetchWishes(false);
-    }, 4000);
+    }, 4500);
   }
 
   // ==========================================
@@ -680,7 +753,7 @@
         const targetEl = document.getElementById(targetId);
         if (targetEl) {
           setActiveTab(targetId);
-          const headerOffset = 60;
+          const headerOffset = 15;
           const elementPosition = targetEl.getBoundingClientRect().top;
           const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
           window.scrollTo({
@@ -692,7 +765,7 @@
     });
 
     // Real-time ScrollSpy untuk mengupdate tab aktif saat digulir
-    const sectionIds = ['beranda', 'mempelai', 'acara', 'galeri', 'ucapan', 'amplop-digital'];
+    const sectionIds = ['beranda', 'mempelai', 'acara', 'galeri', 'ucapan'];
     let scrollTimeout;
 
     window.addEventListener('scroll', () => {
@@ -729,8 +802,8 @@
           }
         });
       }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -40px 0px'
+        threshold: 0.05,
+        rootMargin: '0px 0px -10% 0px'
       });
 
       revealElements.forEach((el) => observer.observe(el));
@@ -769,7 +842,7 @@
     function openLightbox(src, caption) {
       lightboxImg.src = src;
       if (lightboxCaption) {
-        lightboxCaption.textContent = caption || 'Rudi & Yola';
+        lightboxCaption.textContent = caption || 'Rudi & Yolla';
       }
       lightbox.classList.add('active');
       document.body.style.overflow = 'hidden';
@@ -813,13 +886,64 @@
     });
   }
 
+  // Dynamic 29 Nov Event Settings Loader
+  async function loadDynamicEvent29Settings() {
+    let venue = 'Kp. Sindangelet, Cisayong';
+    let address = 'Kp. Sindangelet Jl. Raya Cisayong No.184, RT.2/RW.3, Sukaraharja, Kec. Cisayong, Kabupaten Tasikmalaya, Jawa Barat 46153';
+    let maps = 'https://maps.google.com/?q=Kp+Sindangelet+Jl+Raya+Cisayong+No+184+RT+2+RW+3+Sukaraharja+Cisayong+Tasikmalaya';
+
+    try {
+      const res = await fetch(`settings.json?t=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.venue_29) venue = data.venue_29;
+        if (data && data.address_29) address = data.address_29;
+        if (data && data.maps_29) maps = data.maps_29;
+      }
+    } catch (e) {}
+
+    try {
+      const stored = localStorage.getItem('wedding_settings_data');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.venue29) venue = parsed.venue29;
+        if (parsed.address29) address = parsed.address29;
+        if (parsed.maps29) maps = parsed.maps29;
+      }
+    } catch (e) {}
+
+    const titleEl = document.getElementById('venue-title-29');
+    const addrEl = document.getElementById('venue-address-29');
+    const mapsEl = document.getElementById('venue-maps-link-29');
+    const copyEl = document.getElementById('venue-copy-btn-29');
+
+    if (titleEl) titleEl.textContent = venue;
+    if (addrEl) addrEl.textContent = address;
+    if (mapsEl) mapsEl.href = maps;
+    if (copyEl) copyEl.setAttribute('data-account', address);
+  }
+
+  // Simpan Jadwal ke Kalender HP / Device (.ics universal)
+  function setupDeviceCalendarButton() {
+    const btnDeviceCal = document.getElementById('btn-save-device-calendar');
+    if (!btnDeviceCal) return;
+
+    btnDeviceCal.addEventListener('click', () => {
+      if (typeof showToast === 'function') {
+        showToast('Menambahkan jadwal ke Kalender perangkat Anda...');
+      }
+    });
+  }
+
   // ==========================================
   // 11. INITIALIZE ALL ON DOM READY
   // ==========================================
   document.addEventListener('DOMContentLoaded', () => {
     applyGuestName();
+    loadDynamicEvent29Settings();
     updateEventAndLocationUI();
     startCountdown();
+    setupDeviceCalendarButton();
     setupDateSimulator();
     setupCopyButtons();
     setupBottomNav();

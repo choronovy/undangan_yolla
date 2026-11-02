@@ -29,6 +29,15 @@ html, body {
   padding-top: env(safe-area-inset-top, 0px);
 }
 
+/* Hide scrollbar utility for clean menu bars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Sembunyikan scrollbar bawaan agar tampilan mobile rapi */
 ::-webkit-scrollbar {
   width: 5px;
@@ -45,7 +54,7 @@ html, body {
   z-index: 100;
   overflow-y: auto;
   overflow-x: hidden;
-  transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease-in-out;
+  transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1), opacity 1.1s ease-in-out;
   will-change: transform, opacity;
 }
 
@@ -66,7 +75,7 @@ html, body {
   justify-content: center;
   padding: 0 0.875rem;
   pointer-events: none;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease;
 }
 
 .floating-dock-nav.hidden-dock {
@@ -191,18 +200,59 @@ html, body {
   animation-play-state: paused !important;
 }
 
-@keyframes musicWave {
+@keyframes musicWave1 {
   0%, 100% {
-    height: 4px;
+    height: 6px;
   }
   50% {
-    height: 14px;
+    height: 16px;
   }
 }
 
-.music-bar-1 { animation: musicWave 1.2s ease-in-out infinite; }
-.music-bar-2 { animation: musicWave 0.9s ease-in-out infinite 0.2s; }
-.music-bar-3 { animation: musicWave 1.4s ease-in-out infinite 0.4s; }
+@keyframes musicWave2 {
+  0%, 100% {
+    height: 18px;
+  }
+  50% {
+    height: 7px;
+  }
+}
+
+@keyframes musicWave3 {
+  0%, 100% {
+    height: 9px;
+  }
+  50% {
+    height: 18px;
+  }
+}
+
+.music-bar {
+  display: inline-block;
+  transform-origin: bottom;
+  animation-play-state: paused;
+}
+
+.music-bar-1 { 
+  height: 8px;
+  animation: musicWave1 0.85s ease-in-out infinite alternate; 
+}
+.music-bar-2 { 
+  height: 18px;
+  animation: musicWave2 0.7s ease-in-out infinite alternate 0.15s; 
+}
+.music-bar-3 { 
+  height: 12px;
+  animation: musicWave3 0.9s ease-in-out infinite alternate 0.3s; 
+}
+
+.music-playing .music-bar {
+  animation-play-state: running !important;
+}
+
+.music-paused .music-bar {
+  animation-play-state: paused !important;
+}
 
 /* TACTILE RIPPLE EFFECT */
 .ripple-effect {
@@ -299,37 +349,49 @@ html, body {
   pointer-events: none;
 }
 
-/* 2. SCROLL REVEAL UTILITIES (AOS STYLE) */
+/* 2. SCROLL REVEAL UTILITIES (AOS STYLE) - SLOW & LUXURIOUS FADE-IN */
 .reveal-init {
-  opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0 !important;
+  transform: translateY(28px);
+  transition: opacity 1.35s cubic-bezier(0.22, 1, 0.36, 1), transform 1.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
   will-change: opacity, transform;
 }
 
+.reveal-init.reveal-up {
+  transform: translateY(28px);
+}
+
+.reveal-init.reveal-down {
+  transform: translateY(-28px);
+}
+
 .reveal-init.reveal-left {
-  transform: translateX(-35px);
+  transform: translateX(-32px);
 }
 
 .reveal-init.reveal-right {
-  transform: translateX(35px);
+  transform: translateX(32px);
 }
 
 .reveal-init.reveal-zoom {
-  transform: scale(0.93) translateY(20px);
+  transform: scale(0.93) translateY(18px);
+}
+
+.reveal-init.reveal-fade {
+  transform: none;
 }
 
 .reveal-init.revealed {
-  opacity: 1;
-  transform: translateY(0) translateX(0) scale(1);
+  opacity: 1 !important;
+  transform: translateY(0) translateX(0) scale(1) !important;
 }
 
-/* Stagger delay classes */
-.delay-100 { transition-delay: 0.1s; }
-.delay-200 { transition-delay: 0.2s; }
-.delay-300 { transition-delay: 0.3s; }
-.delay-400 { transition-delay: 0.4s; }
-.delay-500 { transition-delay: 0.5s; }
+/* Stagger delay classes - Slow & Harmonic */
+.delay-100 { transition-delay: 0.15s !important; }
+.delay-200 { transition-delay: 0.3s !important; }
+.delay-300 { transition-delay: 0.45s !important; }
+.delay-400 { transition-delay: 0.6s !important; }
+.delay-500 { transition-delay: 0.75s !important; }
 
 /* 3. INTERACTIVE CARD HOVER & ACTIVE LIFT */
 .interactive-card {
@@ -414,9 +476,14 @@ html, body {
   transform: scale(1.08) rotate(90deg);
 }
 
-/* 5. LUXURY COUNTDOWN TIMER STYLING */
-.countdown-seamless-bg {
-  background: linear-gradient(180deg, #faf9f7 0%, rgba(234, 243, 252, 0.75) 18%, #dcebf8 50%, rgba(234, 243, 252, 0.75) 82%, #faf9f7 100%);
+/* 5. LUXURY SECTION SEAMLESS WATERCOLOR GRADIENTS */
+.countdown-seamless-bg,
+.section-seamless-bg {
+  background: linear-gradient(180deg, #faf9f7 0%, rgba(234, 243, 252, 0.78) 16%, #dbeaf8 50%, rgba(234, 243, 252, 0.78) 84%, #faf9f7 100%);
+}
+
+.section-seamless-bg-alt {
+  background: linear-gradient(180deg, #faf9f7 0%, rgba(230, 241, 252, 0.82) 15%, #d4e7f7 50%, rgba(230, 241, 252, 0.82) 85%, #faf9f7 100%);
 }
 
 .countdown-card-wrapper {

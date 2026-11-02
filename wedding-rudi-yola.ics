@@ -1,0 +1,48 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Rudi & Yolla Wedding//ID
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Pernikahan Rudi & Yolla
+X-WR-TIMEZONE:Asia/Jakarta
+BEGIN:VEVENT
+UID:wedding-rudi-yolla-27nov2026@undangan-yolla.com
+DTSTAMP:20261102T140000Z
+DTSTART:20261127T010000Z
+DTEND:20261127T070000Z
+SUMMARY:Pernikahan Rudi & Yolla (Akad & Resepsi)
+DESCRIPTION:Akad Nikah (08.00 - 10.00 WIB) & Resepsi Sesi 1 (11.00 - 14.00 WIB) Pernikahan Rudi Rusyandi & Yolla Sri Nur Juwita.
+LOCATION:Rancageneng 2 (pintu masuk perum geria Anugrah), Jl. Rancageneng, Sukajaya, Kec. Bungursari, Kota Tasikmalaya, Jawa Barat 46151
+STATUS:CONFIRMED
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Pengingat: Pernikahan Rudi & Yolla besok!
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT2H
+ACTION:DISPLAY
+DESCRIPTION:Pengingat: Pernikahan Rudi & Yolla 2 jam lagi!
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:wedding-rudi-yolla-29nov2026@undangan-yolla.com
+DTSTAMP:20261102T140000Z
+DTSTART:20261129T030000Z
+DTEND:20261129T080000Z
+SUMMARY:Resepsi Pernikahan Rudi & Yolla (Sesi 2 / Unduhan Mantu)
+DESCRIPTION:Resepsi & Ramah Tamah (10.00 - 15.00 WIB) Pernikahan Rudi Rusyandi & Yolla Sri Nur Juwita.
+LOCATION:Kp. Sindangelet Jl. Raya Cisayong No.184, RT.2/RW.3, Sukaraharja, Kec. Cisayong, Kabupaten Tasikmalaya, Jawa Barat 46153
+STATUS:CONFIRMED
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Pengingat: Resepsi Pernikahan Rudi & Yolla besok!
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT2H
+ACTION:DISPLAY
+DESCRIPTION:Pengingat: Resepsi Pernikahan Rudi & Yolla 2 jam lagi!
+END:VALARM
+END:VEVENT
+END:VCALENDAR

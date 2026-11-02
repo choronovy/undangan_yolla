@@ -1,5 +1,5 @@
 /**
- * Generator Undangan & Tautan Tamu - Rudi & Yola
+ * Generator Undangan & Tautan Tamu - Rudi & Yolla
  * Script untuk generator.html: membuat link personal, salin link, share ke WhatsApp, & riwayat
  */
 
@@ -63,13 +63,13 @@ _Assalamu’alaikum Warahmatullahi Wabarakatuh_
 
 Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada acara pernikahan kami:
 
-✨ *Rudi Dananjaya & Yola Anindita* ✨
+*Rudi Rusyandi & Yolla Sri Nur Juwita*
 
-🗓 *Jumat, 27 November 2026*
-📍 *The Manor Andara, Jakarta*
+Hari/Tanggal: *Jumat, 27 November 2026*
+Lokasi: *Rancageneng 2, Kota Tasikmalaya*
 
 Untuk informasi detail acara, lokasi, dan memberikan ucapan serta doa restu, silakan buka tautan undangan digital berikut:
-👉 ${url}
+${url}
 
 Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
 
@@ -78,7 +78,7 @@ Atas kehadiran dan doa restunya, kami ucapkan terima kasih yang sebesar-besarnya
 _Wassalamu’alaikum Warahmatullahi Wabarakatuh_
 
 Hormat kami yang berbahagia,
-*Rudi & Yola*`;
+*Rudi & Yolla*`;
   }
 
   // Update Tampilan Preview

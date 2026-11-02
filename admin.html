@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Admin Dashboard | Kelola Generator &amp; Percakapan | Rudi &amp; Yola</title>
+  <title>Admin Dashboard | Kelola Generator &amp; Percakapan | Rudi &amp; Yolla</title>
 
   <!-- Google Fonts & Material Symbols -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,7 +37,7 @@
   </script>
 
   <!-- Custom CSS terpisah -->
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=2.3">
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans selection:bg-[#cbe6ff] selection:text-primary">
 
@@ -100,56 +100,133 @@
   <!-- ==============================================================
        2. DASHBOARD SECTION (UTAMA)
        ============================================================== -->
-  <div id="admin-dashboard-section" class="hidden flex-1 flex flex-col">
+  <div id="admin-dashboard" class="hidden flex-1 flex flex-col">
 
-    <!-- TOP HEADER -->
+    <!-- TOP HEADER & MODERN MENU BAR -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
-      <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+      <div class="max-w-6xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2.5">
         <!-- Logo & Title -->
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full border border-secondary bg-surface flex items-center justify-center shadow-xs">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-9 h-9 rounded-xl border border-secondary/40 bg-surface flex items-center justify-center shadow-xs flex-shrink-0">
             <span class="font-serif text-xs font-bold text-secondary">R&amp;Y</span>
           </div>
-          <div>
-            <h1 class="font-serif text-sm sm:text-base font-bold text-[#1d3d55] leading-tight flex items-center gap-1.5">
-              <span>Admin Undangan Rudi &amp; Yola</span>
-              <span class="live-badge-dot"></span>
+          <div class="min-w-0">
+            <h1 class="font-serif text-xs sm:text-base font-bold text-[#1d3d55] leading-tight flex items-center gap-1.5 truncate">
+              <span>Admin Undangan</span>
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" title="Sistem Aktif"></span>
             </h1>
-            <p class="text-[10px] text-slate-500 uppercase tracking-widest">Sistem Aktif &bull; Laragon Localhost</p>
+            <p class="text-[9.5px] sm:text-[10px] text-slate-400 font-medium uppercase tracking-wider truncate">Rudi &amp; Yolla &bull; Panel Kelola</p>
           </div>
         </div>
 
-        <!-- Quick Links & Logout -->
-        <div class="flex items-center gap-2">
-          <a href="index.html" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-700 hover:bg-slate-50 font-medium flex items-center gap-1 transition-colors">
-            <span class="material-symbols-outlined text-[15px]">open_in_new</span>
-            <span class="hidden sm:inline">Lihat Undangan</span>
+        <!-- Quick Links, Mobile Menu Button & Logout -->
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          <!-- Buka Website Undangan Tamu -->
+          <a href="index.html" target="_blank" class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs text-slate-700 font-medium flex items-center gap-1 transition-colors" title="Buka Website Undangan">
+            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+            <span class="hidden md:inline">Lihat Web</span>
           </a>
-          <button id="btn-admin-logout" type="button" class="px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer" title="Keluar">
+
+          <!-- Tombol Menu Bar (Drawer Navigasi Khusus HP) -->
+          <button id="btn-toggle-menu-bar" type="button" class="md:hidden px-2.5 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer" title="Buka Menu Navigasi">
+            <span class="material-symbols-outlined text-[18px]">menu</span>
+            <span class="text-[11px]">Menu</span>
+          </button>
+
+          <!-- Logout Button -->
+          <button id="btn-admin-logout" type="button" class="px-2.5 py-1.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer" title="Keluar">
             <span class="material-symbols-outlined text-[16px]">logout</span>
-            <span>Logout</span>
+            <span class="hidden sm:inline">Logout</span>
           </button>
         </div>
       </div>
 
-      <!-- NAVIGATION TABS -->
-      <div class="max-w-6xl mx-auto px-4 flex border-t border-slate-100 overflow-x-auto gap-2">
-        <button type="button" class="admin-tab-btn active px-4 py-2.5 text-xs font-semibold border-b-2 border-primary text-primary flex items-center gap-1.5 cursor-pointer" data-tab="tab-percakapan">
-          <span class="material-symbols-outlined text-[17px]">forum</span>
-          <span>Percakapan &amp; Doa</span>
-        </button>
+      <!-- SEGMENTED HORIZONTAL PILL MENU BAR (Teratur, Tidak Tumpuk & Responsif) -->
+      <div class="bg-slate-50/95 border-t border-slate-100 px-3 sm:px-6 py-2">
+        <div class="max-w-6xl mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
+          <!-- Menu Bar Item 1: Percakapan -->
+          <button type="button" class="admin-tab-btn active inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-white text-primary shadow-xs border border-slate-200/80 transition-all cursor-pointer" data-tab="tab-percakapan">
+            <span class="material-symbols-outlined text-[17px]">forum</span>
+            <span>Percakapan &amp; Doa</span>
+            <span id="nav-count-wishes" class="px-1.5 py-0.2 rounded-full text-[10px] bg-primary/10 text-primary font-bold">0</span>
+          </button>
 
-        <button type="button" class="admin-tab-btn px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 cursor-pointer" data-tab="tab-generator">
-          <span class="material-symbols-outlined text-[17px]">link</span>
-          <span>Generator Undangan &amp; Buku Tamu</span>
-        </button>
+          <!-- Menu Bar Item 2: Generator -->
+          <button type="button" class="admin-tab-btn inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-white/60 transition-all cursor-pointer" data-tab="tab-generator">
+            <span class="material-symbols-outlined text-[17px]">person_add</span>
+            <span>Generator &amp; Tamu</span>
+            <span id="nav-count-guests" class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 text-slate-700 font-bold">0</span>
+          </button>
 
-        <button type="button" class="admin-tab-btn px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 cursor-pointer" data-tab="tab-settings">
-          <span class="material-symbols-outlined text-[17px]">settings</span>
-          <span>Pengaturan Acara</span>
-        </button>
+          <!-- Menu Bar Item 3: Settings -->
+          <button type="button" class="admin-tab-btn inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-white/60 transition-all cursor-pointer" data-tab="tab-settings">
+            <span class="material-symbols-outlined text-[17px]">settings</span>
+            <span>Pengaturan Acara</span>
+          </button>
+        </div>
       </div>
     </header>
+
+    <!-- MOBILE SLIDE-OVER MENU DRAWER (Menu Bar Modal Rapi untuk Layar HP) -->
+    <div id="mobile-menu-drawer" class="fixed inset-0 z-50 bg-[#1d3d55]/60 backdrop-blur-xs transition-opacity opacity-0 pointer-events-none duration-300 md:hidden">
+      <div id="mobile-menu-panel" class="absolute top-0 right-0 w-72 max-w-[85vw] h-full bg-white shadow-2xl p-5 flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-out">
+        <!-- Header Drawer -->
+        <div>
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-surface border border-secondary flex items-center justify-center">
+                <span class="font-serif text-xs font-bold text-secondary">R&amp;Y</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-xs text-[#1d3d55]">Menu Navigasi</h3>
+                <p class="text-[10px] text-slate-400">Admin Dashboard</p>
+              </div>
+            </div>
+            <button id="btn-close-menu-bar" type="button" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-500 cursor-pointer">
+              <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+          </div>
+
+          <!-- Drawer Navigation Links -->
+          <nav class="space-y-1.5 mt-4">
+            <button type="button" class="admin-drawer-tab-btn active w-full flex items-center justify-between p-3 rounded-xl text-xs font-semibold bg-primary/10 text-primary border border-primary/20 text-left transition-all" data-tab="tab-percakapan">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[19px]">forum</span>
+                <span>Percakapan &amp; Doa</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] bg-primary text-white font-bold" id="drawer-wishes-badge">0</span>
+            </button>
+
+            <button type="button" class="admin-drawer-tab-btn w-full flex items-center justify-between p-3 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 text-left transition-all" data-tab="tab-generator">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[19px]">person_add</span>
+                <span>Generator &amp; Tamu</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] bg-slate-200 text-slate-700 font-bold" id="drawer-guests-badge">0</span>
+            </button>
+
+            <button type="button" class="admin-drawer-tab-btn w-full flex items-center justify-between p-3 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 text-left transition-all" data-tab="tab-settings">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[19px]">settings</span>
+                <span>Pengaturan Acara</span>
+              </span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- Footer Drawer -->
+        <div class="pt-4 border-t border-slate-100 space-y-2">
+          <a href="index.html" target="_blank" class="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-colors">
+            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+            <span>Buka Web Undangan</span>
+          </a>
+          <button id="btn-drawer-logout" type="button" class="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">logout</span>
+            <span>Keluar (Logout)</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- MAIN BODY -->
     <main class="max-w-6xl mx-auto w-full p-4 sm:p-6 space-y-6 flex-1">
@@ -242,9 +319,15 @@
             </div>
           </div>
 
+          <!-- Mobile Swipe Hint -->
+          <div class="flex items-center gap-1.5 text-[11px] text-slate-400 sm:hidden px-4 py-2 bg-slate-50 border-b border-slate-100">
+            <span class="material-symbols-outlined text-[15px] text-primary">swipe</span>
+            <span>Geser tabel ke samping untuk melihat seluruh kolom</span>
+          </div>
+
           <!-- Table Container -->
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full min-w-[680px] text-left border-collapse">
               <thead>
                 <tr class="bg-slate-50/80 text-slate-500 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-200">
                   <th class="py-3 px-4 w-12 text-center">No</th>
@@ -277,53 +360,23 @@
               <span class="material-symbols-outlined text-primary text-xl">person_add</span>
               <h2 class="text-sm sm:text-base font-bold text-[#1d3d55]">Buat Link Undangan Tamu (Generator)</h2>
             </div>
-            <button id="btn-toggle-bulk-modal" type="button" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer">
+            <button id="btn-open-bulk-modal" type="button" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer">
               <span class="material-symbols-outlined text-sm">playlist_add</span>
               <span>Tambah Banyak (Bulk Add)</span>
             </button>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3.5 items-end">
             <!-- Nama Tamu -->
-            <div>
+            <div class="md:col-span-6">
               <label for="gen-guest-name" class="block text-xs font-semibold text-slate-700 mb-1">
                 Nama Tamu / Penerima <span class="text-rose-500">*</span>
               </label>
               <input type="text" id="gen-guest-name" placeholder="Contoh: Dimas Prasetya" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none transition-all">
             </div>
 
-            <!-- Sapaan / Sebutan -->
-            <div>
-              <label for="gen-guest-suffix" class="block text-xs font-semibold text-slate-700 mb-1">
-                Sapaan / Tambahan
-              </label>
-              <select id="gen-guest-suffix" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none bg-white">
-                <option value="& Partner">&amp; Partner</option>
-                <option value="& Keluarga">&amp; Keluarga</option>
-                <option value="di Tempat">di Tempat</option>
-                <option value="Spesial">Spesial</option>
-                <option value="">Tanpa Tambahan (Nama Saja)</option>
-              </select>
-            </div>
-
-            <!-- Kategori / Hubungan -->
-            <div>
-              <label for="gen-guest-category" class="block text-xs font-semibold text-slate-700 mb-1">
-                Kategori Tamu
-              </label>
-              <select id="gen-guest-category" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none bg-white">
-                <option value="Sahabat">Sahabat</option>
-                <option value="Keluarga">Keluarga</option>
-                <option value="Rekan Kerja">Rekan Kerja</option>
-                <option value="VIP">Tamu VIP</option>
-                <option value="Umum">Umum</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- WhatsApp Number (Optional) -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
-            <div class="md:col-span-2">
+            <!-- WhatsApp Number (Optional) -->
+            <div class="md:col-span-6">
               <label for="gen-guest-phone" class="block text-xs font-semibold text-slate-700 mb-1">
                 Nomor WhatsApp (Opsional, untuk kirim WA langsung)
               </label>
@@ -333,7 +386,8 @@
               </div>
             </div>
 
-            <div class="flex items-end">
+            <!-- Tombol Generate -->
+            <div class="md:col-span-12 pt-1">
               <button id="btn-generate-guest" type="button" class="w-full py-2.5 bg-primary hover:bg-[#344f67] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer">
                 <span class="material-symbols-outlined text-sm">bolt</span>
                 <span>Generate &amp; Simpan Tamu</span>
@@ -401,8 +455,14 @@
             </div>
           </div>
 
+          <!-- Mobile Swipe Hint -->
+          <div class="flex items-center gap-1.5 text-[11px] text-slate-400 sm:hidden px-4 py-2 bg-slate-50 border-b border-slate-100">
+            <span class="material-symbols-outlined text-[15px] text-primary">swipe</span>
+            <span>Geser tabel ke samping untuk melihat seluruh kolom</span>
+          </div>
+
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full min-w-[700px] text-left border-collapse">
               <thead>
                 <tr class="bg-slate-50/80 text-slate-500 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-200">
                   <th class="py-3 px-4 w-12 text-center">No</th>
@@ -437,7 +497,7 @@
           <form id="settings-form" class="space-y-4 max-w-xl">
             <div>
               <label for="setting-venue-29" class="block text-xs font-semibold text-slate-700 mb-1">Nama Gedung / Ballroom (29 Nov)</label>
-              <input type="text" id="setting-venue-29" placeholder="Contoh: Grand Ballroom Hotel Santika Premiere" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none">
+              <input type="text" id="setting-venue-29" placeholder="Contoh: Kp. Sindangelet, Cisayong" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none">
             </div>
 
             <div>
@@ -462,7 +522,7 @@
 
     <!-- FOOTER -->
     <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
-      &copy; 2026 Admin Undangan Rudi &amp; Yola &bull; Sistem Berjalan di Localhost Laragon
+      &copy; 2026 Admin Undangan Rudi &amp; Yolla &bull; Sistem Berjalan di Localhost Laragon
     </footer>
 
   </div>
@@ -487,33 +547,10 @@
           Tempelkan (*paste*) daftar nama tamu undangan, <strong>satu baris untuk setiap nama</strong>:
         </p>
 
-        <textarea id="bulk-names-input" rows="7" placeholder="Contoh:&#10;Bpk. Bambang Hermanto&#10;Ibu Ratna Sari&#10;Dimas Prasetya&#10;Alisa Maharani" class="w-full p-3 rounded-xl border border-slate-200 text-xs font-mono outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-700 mb-1">Tambahkan Akhiran Sapaan</label>
-            <select id="bulk-suffix-select" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white">
-              <option value="& Partner">&amp; Partner</option>
-              <option value="& Keluarga">&amp; Keluarga</option>
-              <option value="di Tempat">di Tempat</option>
-              <option value="">Tanpa Tambahan</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-700 mb-1">Kategori</label>
-            <select id="bulk-category-select" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white">
-              <option value="Umum">Umum</option>
-              <option value="Sahabat">Sahabat</option>
-              <option value="Keluarga">Keluarga</option>
-              <option value="Rekan Kerja">Rekan Kerja</option>
-              <option value="VIP">VIP</option>
-            </select>
-          </div>
-        </div>
+        <textarea id="bulk-guest-names" rows="7" placeholder="Contoh:&#10;Bpk. Bambang Hermanto&#10;Ibu Ratna Sari&#10;Dimas Prasetya&#10;Alisa Maharani" class="w-full p-3 rounded-xl border border-slate-200 text-xs font-mono outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
 
         <div class="flex items-center justify-end gap-2 pt-2">
-          <button id="btn-cancel-bulk" type="button" class="px-4 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-medium cursor-pointer">
+          <button id="btn-cancel-bulk-modal" type="button" class="px-4 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-medium cursor-pointer">
             Batal
           </button>
           <button id="btn-submit-bulk" type="button" class="px-5 py-2 bg-primary hover:bg-[#344f67] text-white rounded-xl text-xs font-semibold flex items-center gap-1 shadow-sm cursor-pointer">
@@ -528,7 +565,11 @@
   <!-- Toast Container -->
   <div id="toast-container"></div>
 
+  <!-- Supabase Cloud SDK & Config -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js?v=1.0"></script>
+
   <!-- Script JS terpisah -->
-  <script src="assets/js/admin.js"></script>
+  <script src="assets/js/admin.js?v=2.6"></script>
 </body>
 </html>

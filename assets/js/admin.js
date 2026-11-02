@@ -1,6 +1,6 @@
 /**
  * ADMIN PANEL LOGIC (100% MURNI JSON & LOCALSTORAGE)
- * Rudi & Yola Wedding Invitation
+ * Rudi & Yolla Wedding Invitation
  * 
  * Fitur:
  * 1. Autentikasi Admin (Username: admin, Pass: infix)
@@ -24,7 +24,10 @@
   const WISHES_JSON_URL = 'wishes.json';
   const GUESTS_JSON_URL = 'guests.json';
   const SETTINGS_JSON_URL = 'settings.json';
-  const WISHES_STORAGE_KEY = 'wedding_wishes_data';
+  const WISHES_STORAGE_KEY = 'wedding_wishes_data_v2';
+  try {
+    localStorage.removeItem('wedding_wishes_data');
+  } catch (e) {}
   const GUESTS_STORAGE_KEY = 'wedding_guests_data';
   const SETTINGS_STORAGE_KEY = 'wedding_settings_data';
 
@@ -110,6 +113,22 @@
   let allWishes = [];
   let allGuests = [];
 
+  let adminRealtimeSubscribed = false;
+  function setupAdminRealtime() {
+    if (adminRealtimeSubscribed) return;
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      adminRealtimeSubscribed = true;
+      try {
+        supabaseClient
+          .channel('admin_wishes_realtime')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'wishes' }, () => {
+            loadWishes();
+          })
+          .subscribe();
+      } catch (e) {}
+    }
+  }
+
   // ==========================================
   // 1. AUTENTIKASI (USERNAME: admin, PASS: infix)
   // ==========================================
@@ -119,6 +138,7 @@
       if (loginSection) loginSection.classList.add('hidden');
       if (dashboardSection) dashboardSection.classList.remove('hidden');
       loadAllData();
+      setupAdminRealtime();
     } else {
       if (loginSection) loginSection.classList.remove('hidden');
       if (dashboardSection) dashboardSection.classList.add('hidden');
@@ -168,22 +188,95 @@
   }
 
   // ==========================================
-  // 2. NAVIGASI TABS
+  // 2. NAVIGASI TABS & RESPONSIVE MENU BAR
   // ==========================================
+  const mobileMenuDrawer = document.getElementById('mobile-menu-drawer');
+  const mobileMenuPanel = document.getElementById('mobile-menu-panel');
+  const btnToggleMenuBar = document.getElementById('btn-toggle-menu-bar');
+  const btnCloseMenuBar = document.getElementById('btn-close-menu-bar');
+  const btnDrawerLogout = document.getElementById('btn-drawer-logout');
+  const drawerTabBtns = document.querySelectorAll('.admin-drawer-tab-btn');
+
+  function openMobileMenu() {
+    if (!mobileMenuDrawer || !mobileMenuPanel) return;
+    mobileMenuDrawer.classList.remove('opacity-0', 'pointer-events-none');
+    mobileMenuDrawer.classList.add('opacity-100', 'pointer-events-auto');
+    mobileMenuPanel.classList.remove('translate-x-full');
+    mobileMenuPanel.classList.add('translate-x-0');
+  }
+
+  function closeMobileMenu() {
+    if (!mobileMenuDrawer || !mobileMenuPanel) return;
+    mobileMenuDrawer.classList.remove('opacity-100', 'pointer-events-auto');
+    mobileMenuDrawer.classList.add('opacity-0', 'pointer-events-none');
+    mobileMenuPanel.classList.remove('translate-x-0');
+    mobileMenuPanel.classList.add('translate-x-full');
+  }
+
+  if (btnToggleMenuBar) btnToggleMenuBar.addEventListener('click', openMobileMenu);
+  if (btnCloseMenuBar) btnCloseMenuBar.addEventListener('click', closeMobileMenu);
+  if (mobileMenuDrawer) {
+    mobileMenuDrawer.addEventListener('click', (e) => {
+      if (e.target === mobileMenuDrawer) closeMobileMenu();
+    });
+  }
+  if (btnDrawerLogout) {
+    btnDrawerLogout.addEventListener('click', () => {
+      closeMobileMenu();
+      if (btnAdminLogout) btnAdminLogout.click();
+    });
+  }
+
+  function switchTab(targetTab) {
+    if (!targetTab) return;
+    const cleanId = targetTab.startsWith('tab-') ? targetTab : ('tab-' + targetTab);
+
+    // 1. Update horizontal menu bar buttons
+    tabBtns.forEach((b) => {
+      const bTab = b.getAttribute('data-tab') || '';
+      const bClean = bTab.startsWith('tab-') ? bTab : ('tab-' + bTab);
+      if (bClean === cleanId) {
+        b.classList.add('active', 'bg-white', 'text-primary', 'shadow-xs', 'border', 'border-slate-200/80', 'font-bold');
+        b.classList.remove('text-slate-600', 'hover:bg-white/60');
+      } else {
+        b.classList.remove('active', 'bg-white', 'text-primary', 'shadow-xs', 'border', 'border-slate-200/80', 'font-bold');
+        b.classList.add('text-slate-600', 'hover:bg-white/60');
+      }
+    });
+
+    // 2. Update drawer tab buttons
+    drawerTabBtns.forEach((b) => {
+      const bTab = b.getAttribute('data-tab') || '';
+      const bClean = bTab.startsWith('tab-') ? bTab : ('tab-' + bTab);
+      if (bClean === cleanId) {
+        b.classList.add('active', 'bg-primary/10', 'text-primary', 'border-primary/20');
+        b.classList.remove('text-slate-600', 'hover:bg-slate-50', 'border-transparent');
+      } else {
+        b.classList.remove('active', 'bg-primary/10', 'text-primary', 'border-primary/20');
+        b.classList.add('text-slate-600', 'hover:bg-slate-50', 'border-transparent');
+      }
+    });
+
+    // 3. Switch visible content
+    tabContents.forEach((c) => c.classList.add('hidden'));
+    const activeContent = document.getElementById(cleanId);
+    if (activeContent) activeContent.classList.remove('hidden');
+
+    // 4. Close drawer if open
+    closeMobileMenu();
+  }
+
   tabBtns.forEach((btn) => {
     btn.addEventListener('click', function () {
       const targetTab = this.getAttribute('data-tab');
+      switchTab(targetTab);
+    });
+  });
 
-      tabBtns.forEach((b) => {
-        b.classList.remove('active', 'text-primary', 'border-b-2', 'border-primary', 'bg-blue-50/60');
-        b.classList.add('text-slate-500');
-      });
-      this.classList.add('active', 'text-primary', 'border-b-2', 'border-primary', 'bg-blue-50/60');
-      this.classList.remove('text-slate-500');
-
-      tabContents.forEach((c) => c.classList.add('hidden'));
-      const activeContent = document.getElementById('tab-' + targetTab);
-      if (activeContent) activeContent.classList.remove('hidden');
+  drawerTabBtns.forEach((btn) => {
+    btn.addEventListener('click', function () {
+      const targetTab = this.getAttribute('data-tab');
+      switchTab(targetTab);
     });
   });
 
@@ -207,12 +300,31 @@
   // A. PERCAKAPAN & DOA (WISHES)
   async function loadWishes() {
     let baseWishes = [];
-    try {
-      const res = await fetch(`${WISHES_JSON_URL}?t=${Date.now()}`);
-      if (res.ok) {
-        baseWishes = await res.json();
+
+    // 1. Ambil dari Supabase Cloud jika terkonfigurasi
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      try {
+        const { data, error } = await supabaseClient
+          .from('wishes')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && Array.isArray(data)) {
+          baseWishes = data;
+        }
+      } catch (err) {
+        console.warn('[Supabase Admin] Gagal fetch data:', err);
       }
-    } catch (e) {}
+    }
+
+    // 2. Fallback offline / local JSON
+    if (!baseWishes || baseWishes.length === 0) {
+      try {
+        const res = await fetch(`${WISHES_JSON_URL}?t=${Date.now()}`);
+        if (res.ok) {
+          baseWishes = await res.json();
+        }
+      } catch (e) {}
+    }
 
     let storedWishes = [];
     try {
@@ -254,6 +366,12 @@
     if (statHadir) statHadir.textContent = hadir;
     if (statTidakHadir) statTidakHadir.textContent = tidakHadir;
     if (statTotalGuests) statTotalGuests.textContent = allGuests.length;
+
+    // Sinkronisasi badge counter menu bar
+    const navWishes = document.getElementById('nav-count-wishes');
+    const drawerWishes = document.getElementById('drawer-wishes-badge');
+    if (navWishes) navWishes.textContent = total;
+    if (drawerWishes) drawerWishes.textContent = total;
   }
 
   function renderWishesTable() {
@@ -329,8 +447,17 @@
     });
   }
 
-  function deleteWish(wishId) {
+  async function deleteWish(wishId) {
     if (!confirm('Apakah Anda yakin ingin menghapus pesan/ucapan ini?')) return;
+
+    // Hapus dari Supabase Cloud jika terhubung
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      try {
+        await supabaseClient.from('wishes').delete().eq('id', wishId);
+      } catch (err) {
+        console.warn('[Supabase Admin] Gagal menghapus dari cloud:', err);
+      }
+    }
 
     allWishes = allWishes.filter((w) => w.id !== wishId);
     try {
@@ -386,6 +513,12 @@
   }
 
   function renderGuestsTable() {
+    // Sinkronisasi badge counter tamu di menu bar
+    const navGuests = document.getElementById('nav-count-guests');
+    const drawerGuests = document.getElementById('drawer-guests-badge');
+    if (navGuests) navGuests.textContent = allGuests.length;
+    if (drawerGuests) drawerGuests.textContent = allGuests.length;
+
     if (!guestsTableBody) return;
 
     const keyword = searchGuestInput ? searchGuestInput.value.toLowerCase().trim() : '';
@@ -491,12 +624,7 @@
       }
 
       let fullName = rawName;
-      const suffix = genSuffixSelect ? genSuffixSelect.value : '';
-      if (suffix && !fullName.includes(suffix)) {
-        fullName += ' ' + suffix;
-      }
-
-      const category = genCategorySelect ? genCategorySelect.value : 'Umum';
+      const category = 'Tamu';
       let phone = genPhoneInput ? genPhoneInput.value.trim().replace(/[^0-9]/g, '') : '';
       if (phone.startsWith('0')) {
         phone = '62' + phone.substring(1);
@@ -581,16 +709,13 @@
         return;
       }
 
-      const suffix = bulkSuffixSelect ? bulkSuffixSelect.value : '';
-      const category = bulkCategorySelect ? bulkCategorySelect.value : 'Umum';
       const lines = names.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
 
       const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
       let count = 0;
 
       lines.forEach((line) => {
-        let fullName = line;
-        if (suffix && !fullName.includes(suffix)) fullName += ' ' + suffix;
+        const fullName = line;
         const guestUrl = `${baseUrl}?to=${encodeURIComponent(fullName)}`;
 
         allGuests.unshift({
@@ -621,9 +746,9 @@
   // D. EVENT SETTINGS (UPDATE 29 NOV INFO - MURNI JSON/LOCALSTORAGE)
   async function loadSettings() {
     let settings = {
-      venue29: 'Grand Ballroom Hotel Santika Premiere Jakarta',
-      address29: 'Grand Ballroom Hotel Santika Premiere / Gedung Serbaguna Jakarta (Detail alamat spesifik disematkan di sini).',
-      maps29: 'https://maps.google.com/?q=Hotel+Santika+Premiere+Jakarta'
+      venue29: 'Kp. Sindangelet, Cisayong',
+      address29: 'Kp. Sindangelet Jl. Raya Cisayong No.184, RT.2/RW.3, Sukaraharja, Kec. Cisayong, Kabupaten Tasikmalaya, Jawa Barat 46153',
+      maps29: 'https://maps.google.com/?q=Kp+Sindangelet+Jl+Raya+Cisayong+No+184+RT+2+RW+3+Sukaraharja+Cisayong+Tasikmalaya'
     };
 
     try {
@@ -682,7 +807,7 @@
         alert('Belum ada data ucapan untuk diexport.');
         return;
       }
-      exportToCsv('wishes_rudi_yola.csv', [
+      exportToCsv('wishes_rudi_yolla.csv', [
         ['No', 'Nama Tamu', 'Konfirmasi Kehadiran', 'Pesan / Doa Restu', 'Waktu Kirim'],
         ...allWishes.map((w, idx) => [
           idx + 1,
@@ -701,7 +826,7 @@
         alert('Belum ada data buku tamu untuk diexport.');
         return;
       }
-      exportToCsv('buku_tamu_rudi_yola.csv', [
+      exportToCsv('buku_tamu_rudi_yolla.csv', [
         ['No', 'Nama Tamu Undangan', 'Nomor WhatsApp', 'Kategori', 'Tautan Personal'],
         ...allGuests.map((g, idx) => [
           idx + 1,
@@ -746,9 +871,9 @@ _Assalamu’alaikum Warahmatullahi Wabarakatuh_
 
 Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri hari bahagia kami:
 
-💍 *Pernikahan Rudi & Yola*
-🗓 *Jumat, 27 November 2026*
-📍 *The Manor Andara, Jakarta*
+*Pernikahan Rudi & Yolla*
+Hari/Tanggal: *Jumat, 27 November 2026*
+Lokasi: *Rancageneng 2, Kota Tasikmalaya*
 
 Tautan undangan resmi & konfirmasi kehadiran:
 ${guestUrl}
@@ -759,7 +884,7 @@ Terima kasih.
 _Wassalamu’alaikum Warahmatullahi Wabarakatuh_
 
 Salam hangat,
-*Rudi & Yola*`;
+*Rudi & Yolla*`;
   }
 
   function copyText(text, successMsg) {
