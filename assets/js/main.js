@@ -765,7 +765,7 @@
     });
 
     // Real-time ScrollSpy untuk mengupdate tab aktif saat digulir
-    const sectionIds = ['beranda', 'mempelai', 'acara', 'galeri', 'ucapan'];
+    const sectionIds = ['beranda', 'mempelai', 'acara', 'galeri', 'qrcode', 'ucapan'];
     let scrollTimeout;
 
     window.addEventListener('scroll', () => {
@@ -935,11 +935,221 @@
     });
   }
 
+
+  // ==========================================
+  // 10.B E-TICKET & QR CODE KEHADIRAN TAMU
+  // ==========================================
+  function generateGuestTicketCode(guestName) {
+    let hash = 0;
+    for (let i = 0; i < guestName.length; i++) {
+      hash = ((hash << 5) - hash) + guestName.charCodeAt(i);
+      hash |= 0;
+    }
+    const hex = Math.abs(hash).toString(16).toUpperCase().padStart(4, '0').slice(-4);
+    return `RY-2711-${hex}`;
+  }
+
+  function initGuestQRCode() {
+    const qrContainer = document.getElementById('guest-qr-canvas');
+    if (!qrContainer) return;
+
+    const guestName = getGuestName();
+    const ticketCode = generateGuestTicketCode(guestName);
+
+    // Update badge kode tiket
+    const codeBadge = document.getElementById('guest-ticket-code-badge');
+    if (codeBadge) {
+      codeBadge.textContent = ticketCode;
+    }
+
+    // Bersihkan kontainer QR sebelumnya
+    qrContainer.innerHTML = '';
+
+    // URL yang di-encode ke dalam QR
+    const baseUrl = window.location.origin + window.location.pathname;
+    const fullGuestUrl = `${baseUrl}?to=${encodeURIComponent(guestName)}&code=${ticketCode}`;
+
+    if (typeof QRCode !== 'undefined') {
+      try {
+        new QRCode(qrContainer, {
+          text: fullGuestUrl,
+          width: 170,
+          height: 170,
+          colorDark: '#1d3d55',
+          colorLight: '#ffffff',
+          correctLevel: (typeof QRCode !== 'undefined' && QRCode.CorrectLevel && QRCode.CorrectLevel.H) ? QRCode.CorrectLevel.H : 2
+        });
+      } catch (err) {
+        console.error('Error generating QR Code:', err);
+      }
+    }
+
+    // Download E-Ticket QR Button
+    const btnDownload = document.getElementById('btn-download-ticket-qr');
+    if (btnDownload) {
+      btnDownload.onclick = () => {
+        downloadGuestTicketPass(guestName, ticketCode, qrContainer);
+      };
+    }
+  }
+
+  // Generate luxury VIP pass image onto HTML5 canvas and trigger download
+  function downloadGuestTicketPass(guestName, ticketCode, qrContainer) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const width = 600;
+    const height = 850;
+    canvas.width = width;
+    canvas.height = height;
+
+    // 1. Background gradient (Off-white luxury tone)
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
+    bgGrad.addColorStop(0, '#faf9f7');
+    bgGrad.addColorStop(0.5, '#f0f6fc');
+    bgGrad.addColorStop(1, '#faf9f7');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, width, height);
+
+    // 2. Elegant border
+    ctx.strokeStyle = '#cbe1f2';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(20, 20, width - 40, height - 40);
+
+    ctx.strokeStyle = '#c59b27';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(26, 26, width - 52, height - 52);
+
+    // 3. Header Text
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#5d7389';
+    ctx.font = '600 13px "Plus Jakarta Sans", sans-serif';
+    ctx.letterSpacing = '3px';
+    ctx.fillText('THE WEDDING CELEBRATION OF', width / 2, 75);
+
+    // Couple Name
+    ctx.fillStyle = '#1d3d55';
+    ctx.font = 'bold 36px "Playfair Display", Georgia, serif';
+    ctx.letterSpacing = '1px';
+    ctx.fillText('Rudi & Yolla', width / 2, 120);
+
+    // Badge VIP ACCESS
+    ctx.fillStyle = '#c59b27';
+    ctx.font = 'bold 12px "Plus Jakarta Sans", sans-serif';
+    ctx.letterSpacing = '2px';
+    ctx.fillText('— VIP GUEST PASS —', width / 2, 148);
+
+    // Divider line
+    ctx.strokeStyle = '#dce8f4';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(60, 170);
+    ctx.lineTo(width - 60, 170);
+    ctx.stroke();
+
+    // 4. Guest Name
+    ctx.fillStyle = '#89a8c4';
+    ctx.font = '600 12px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText('NAMA TAMU UNDANGAN', width / 2, 210);
+
+    ctx.fillStyle = '#1d3d55';
+    ctx.font = 'bold 24px "Playfair Display", Georgia, serif';
+    let displayName = guestName;
+    if (displayName.length > 28) displayName = displayName.substring(0, 26) + '...';
+    ctx.fillText(displayName, width / 2, 245);
+
+    // Ticket Code
+    ctx.fillStyle = '#5d7389';
+    ctx.font = '600 14px monospace';
+    ctx.fillText(ticketCode, width / 2, 275);
+
+    // 5. Draw QR Code in center
+    const qrCanvas = qrContainer.querySelector('canvas');
+    const qrImg = qrContainer.querySelector('img');
+    const qrSize = 250;
+    const qrX = (width - qrSize) / 2;
+    const qrY = 310;
+
+    // QR container box
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30);
+    ctx.strokeStyle = '#cbe1f2';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(qrX - 15, qrY - 15, qrSize + 30, qrSize + 30);
+
+    if (qrCanvas) {
+      ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+    } else if (qrImg && qrImg.src) {
+      ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+    }
+
+    // 6. Monogram inside QR Center
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(width / 2, qrY + qrSize / 2, 22, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#1d3d55';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = '#1d3d55';
+    ctx.font = 'bold 13px "Playfair Display", Georgia, serif';
+    ctx.fillText('R&Y', width / 2, qrY + qrSize / 2 + 5);
+
+    // 7. Event Details Bottom
+    const bottomY = 640;
+    ctx.fillStyle = '#1d3d55';
+    ctx.font = 'bold 15px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText('Jumat, 27 November 2026', width / 2, bottomY);
+
+    ctx.fillStyle = '#5d7389';
+    ctx.font = '500 12px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText('Tasikmalaya, Jawa Barat', width / 2, bottomY + 22);
+
+    ctx.fillStyle = '#89a8c4';
+    ctx.font = '400 11px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText('Tunjukkan kartu ini kepada penerima tamu di pintu masuk resepsi.', width / 2, bottomY + 60);
+
+    // Perforated line bottom
+    ctx.strokeStyle = '#cbe1f2';
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.moveTo(40, bottomY + 100);
+    ctx.lineTo(width - 40, bottomY + 100);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = '#c59b27';
+    ctx.font = '600 10px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText('SAVE THE DATE • THE WEDDING OF RUDI & YOLLA', width / 2, bottomY + 125);
+
+    // Download trigger
+    try {
+      const link = document.createElement('a');
+      const cleanFileName = guestName.replace(/[^a-zA-Z0-9]/g, '_');
+      link.download = `E-Ticket_Rudi_Yolla_${cleanFileName}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+
+      if (typeof showToast === 'function') {
+        showToast('E-Ticket & QR Code berhasil diunduh ke galeri!');
+      }
+    } catch (e) {
+      console.error('Failed downloading canvas pass:', e);
+      if (qrCanvas) {
+        const link = document.createElement('a');
+        link.download = `QR_Code_${guestName}.png`;
+        link.href = qrCanvas.toDataURL('image/png');
+        link.click();
+      }
+    }
+  }
+
   // ==========================================
   // 11. INITIALIZE ALL ON DOM READY
   // ==========================================
   document.addEventListener('DOMContentLoaded', () => {
     applyGuestName();
+    initGuestQRCode();
     loadDynamicEvent29Settings();
     updateEventAndLocationUI();
     startCountdown();

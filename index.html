@@ -29,6 +29,8 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <!-- Tailwind Theme Script terpisah di assets/js/tailwind-theme.js -->
   <script src="assets/js/tailwind-theme.js"></script>
+  <!-- QR Code Generator Library -->
+  <script src="assets/js/qrcode.min.js"></script>
 
   <!-- Custom CSS terpisah di assets/css/style.css -->
   <link rel="stylesheet" href="assets/css/style.css?v=2.3">
@@ -827,6 +829,108 @@
           </div>
         </section>
 
+        <!-- SECTION: E-TICKET & QR CODE KEHADIRAN (VIP GUEST PASS) -->
+        <section id="qrcode"
+          class="relative -mx-margin w-[calc(100%+2*3rem)] py-14 px-6 sm:px-8 section-seamless-bg overflow-hidden space-y-space-md">
+          <!-- Ambient Decorative Floral Accents & Color Harmony -->
+          <div class="absolute -top-6 -right-6 w-32 h-44 pointer-events-none select-none opacity-40 z-0">
+            <img src="assets/img/bouquet_right.png" alt="Floral" class="w-full h-full object-contain">
+          </div>
+          <div class="absolute -bottom-8 -left-6 w-32 h-44 pointer-events-none select-none opacity-40 z-0 transform rotate-180">
+            <img src="assets/img/bouquet_left.png" alt="Floral" class="w-full h-full object-contain">
+          </div>
+          <div
+            class="absolute top-1/2 -left-16 w-52 h-52 rounded-full bg-[#abc9ed]/20 blur-3xl pointer-events-none -z-10">
+          </div>
+
+          <div class="text-center space-y-1 reveal-init reveal-up relative z-10">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-[#cbe1f2] text-[11px] font-semibold text-[#1d3d55] shadow-xs mb-1">
+              <span class="material-symbols-outlined text-[15px] text-secondary">qr_code_2</span>
+              <span class="tracking-wider uppercase">Presensi Digital &amp; E-Ticket</span>
+            </div>
+            <h2 class="font-headline-md text-headline-md text-[#243d56]">QR Code Kehadiran</h2>
+            <p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs mx-auto">
+              Tunjukkan QR Code ini kepada penerima tamu saat tiba di lokasi resepsi untuk verifikasi kehadiran.
+            </p>
+          </div>
+
+          <!-- LUXURY VIP GUEST PASS CARD -->
+          <div class="max-w-sm mx-auto relative z-10 reveal-init reveal-scale">
+            <div class="vip-ticket-card bg-white rounded-3xl p-6 sm:p-7 shadow-xl border border-[#cbe1f2]/80 relative overflow-hidden text-center space-y-5">
+              
+              <!-- Subtle Background Texture & Watermark -->
+              <div class="absolute -top-12 -right-12 w-36 h-36 bg-[#eef6ff] rounded-full blur-2xl pointer-events-none"></div>
+              <div class="absolute -bottom-12 -left-12 w-36 h-36 bg-[#fff8e7] rounded-full blur-2xl pointer-events-none"></div>
+
+              <!-- Ticket Top Monogram & Badge -->
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-full border border-secondary/50 bg-surface flex items-center justify-center shadow-xs">
+                    <span class="font-serif text-[11px] font-bold text-secondary">R&amp;Y</span>
+                  </div>
+                  <div class="text-left">
+                    <p class="font-serif text-xs font-bold text-[#1d3d55] leading-tight">Rudi &amp; Yolla</p>
+                    <p class="text-[9.5px] text-slate-400 uppercase tracking-widest font-medium">Wedding Pass</p>
+                  </div>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#edf5fd] text-[#1d3d55] border border-[#cbe1f2] tracking-wider uppercase">
+                  VIP ACCESS
+                </span>
+              </div>
+
+              <!-- Guest Identity Section -->
+              <div class="space-y-1">
+                <p class="text-[10px] uppercase tracking-widest text-slate-400 font-semibold">Tamu Undangan</p>
+                <h3 class="font-serif text-xl sm:text-2xl font-bold text-[#1d3d55] leading-snug guest-name-text">
+                  Dimas Prasetya
+                </h3>
+                <div class="pt-1">
+                  <span id="guest-ticket-code-badge" class="inline-block font-mono text-[11px] font-semibold text-slate-600 bg-slate-100 px-3 py-0.5 rounded-lg border border-slate-200 tracking-wider">
+                    RY-2026-VIP
+                  </span>
+                </div>
+              </div>
+
+              <!-- QR Code Display Box -->
+              <div class="flex flex-col items-center justify-center py-2">
+                <div class="p-3.5 bg-white rounded-2xl border-2 border-dashed border-[#89a8c4]/40 shadow-inner inline-block relative group">
+                  <!-- The QR Code Canvas will be mounted here -->
+                  <div id="guest-qr-canvas" class="flex items-center justify-center min-w-[170px] min-h-[170px]"></div>
+                  <!-- Center Monogram Overlay -->
+                  <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="w-8 h-8 rounded-full bg-white border border-[#1d3d55]/30 shadow-md flex items-center justify-center">
+                      <span class="font-serif text-[10px] font-bold text-[#1d3d55]">R&amp;Y</span>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-[10.5px] text-slate-400 mt-2.5 max-w-[220px]">
+                  Pindai dengan kamera HP / scanner resepsionis di meja buku tamu
+                </p>
+              </div>
+
+              <!-- Ticket Perforated Divider (Efek Tiket Robek / Punch Notches) -->
+              <div class="relative flex items-center justify-center my-1">
+                <div class="absolute -left-10 w-6 h-6 rounded-full bg-[#f0f6fc] border-r border-[#cbe1f2]"></div>
+                <div class="w-full border-t-2 border-dashed border-slate-200"></div>
+                <div class="absolute -right-10 w-6 h-6 rounded-full bg-[#f0f6fc] border-l border-[#cbe1f2]"></div>
+              </div>
+
+              <!-- Ticket Actions -->
+              <div class="space-y-2 pt-1">
+                <button type="button" id="btn-download-ticket-qr"
+                  class="w-full py-2.5 px-4 bg-primary hover:bg-[#344f67] text-white rounded-xl text-xs font-semibold uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]">
+                  <span class="material-symbols-outlined text-[17px]">download</span>
+                  <span>Simpan E-Ticket (Gambar)</span>
+                </button>
+                <p class="text-[10px] text-slate-400">
+                  Simpan gambar ke galeri HP untuk kemudahan akses saat offline
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
         <!-- SECTION 7: UCAPAN & DOA (LIVE SERVER REAL-TIME JSON GUESTBOOK) -->
         <section id="ucapan"
           class="relative -mx-margin w-[calc(100%+2*3rem)] py-14 px-6 sm:px-8 section-seamless-bg-alt overflow-hidden space-y-space-md">
@@ -992,6 +1096,14 @@
             <span class="material-symbols-outlined">photo_library</span>
           </div>
           <span class="nav-label">Galeri</span>
+          <span class="nav-dot"></span>
+        </a>
+
+        <a href="#qrcode" data-path="qrcode" class="nav-dock-item" title="QR Pass">
+          <div class="nav-icon-wrap">
+            <span class="material-symbols-outlined">qr_code_2</span>
+          </div>
+          <span class="nav-label">QR Pass</span>
           <span class="nav-dot"></span>
         </a>
 

@@ -561,13 +561,19 @@
             </span>
           </td>
           <td class="py-3 px-4">
-            <input type="text" readonly value="${escapeHtml(fullUrl)}" class="w-44 text-[11px] font-mono text-slate-600 bg-slate-50 px-2 py-1 rounded border border-slate-200 focus:outline-none">
-          </td>
-          <td class="py-3 px-4">
             <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-medium transition-colors shadow-xs">
               <span class="material-symbols-outlined text-[14px]">send</span>
               <span>Kirim WA</span>
             </a>
+          </td>
+          <td class="py-3 px-4 text-center">
+            <button type="button" class="btn-show-guest-qr inline-flex items-center gap-1 px-2.5 py-1 bg-[#1d3d55] hover:bg-black text-white rounded-lg text-[11px] font-semibold transition-colors shadow-xs cursor-pointer" data-id="${guest.id}" data-name="${escapeHtml(guest.name || '')}" data-category="${escapeHtml(guest.category || 'Tamu')}" data-url="${escapeHtml(fullUrl)}">
+              <span class="material-symbols-outlined text-[15px]">qr_code_2</span>
+              <span>Lihat QR</span>
+            </button>
+          </td>
+          <td class="py-3 px-4">
+            <input type="text" readonly value="${escapeHtml(fullUrl)}" class="w-44 text-[11px] font-mono text-slate-600 bg-slate-50 px-2 py-1 rounded border border-slate-200 focus:outline-none">
           </td>
           <td class="py-3 px-4 text-right">
             <div class="flex items-center justify-end gap-1">
@@ -582,6 +588,16 @@
         </tr>
       `;
     }).join('');
+
+    // Attach QR modal viewer listeners
+    guestsTableBody.querySelectorAll('.btn-show-guest-qr').forEach((btn) => {
+      btn.addEventListener('click', function () {
+        const name = this.getAttribute('data-name');
+        const category = this.getAttribute('data-category');
+        const url = this.getAttribute('data-url');
+        openGuestQrModal(name, category, url);
+      });
+    });
 
     // Attach copy & delete listeners
     guestsTableBody.querySelectorAll('.btn-copy-guest-url').forEach((btn) => {
@@ -664,6 +680,34 @@
         btnSendWhatsapp.href = phone ?
           `https://wa.me/${phone}?text=${encodeURIComponent(waMsg)}` :
           `https://api.whatsapp.com/send?text=${encodeURIComponent(waMsg)}`;
+      }
+
+      // Generate QR Code in Result Box
+      const genQrWrapper = document.getElementById('gen-qrcode-wrapper');
+      if (genQrWrapper) {
+        genQrWrapper.innerHTML = '';
+        if (typeof QRCode !== 'undefined') {
+          try {
+            new QRCode(genQrWrapper, {
+              text: guestUrl,
+              width: 130,
+              height: 130,
+              colorDark: '#1d3d55',
+              colorLight: '#ffffff',
+              correctLevel: (typeof QRCode !== 'undefined' && QRCode.CorrectLevel && QRCode.CorrectLevel.H) ? QRCode.CorrectLevel.H : 2
+            });
+          } catch (e) {
+            console.error('Error generating generator QR:', e);
+          }
+        }
+      }
+
+      // Download QR Button in Result Box
+      const btnDownloadGenQr = document.getElementById('btn-download-gen-qr');
+      if (btnDownloadGenQr) {
+        btnDownloadGenQr.onclick = () => {
+          downloadQRCodeFromContainer(genQrWrapper, `QR_Undangan_${fullName.replace(/[^a-zA-Z0-9]/g, '_')}.png`);
+        };
       }
 
       if (genResultCard) {
@@ -953,6 +997,89 @@ Salam hangat,
       toast.classList.add('translate-y-3', 'opacity-0');
       setTimeout(() => toast.remove(), 350);
     }, 3000);
+  }
+
+
+  // ==========================================
+  // HELPER MODAL & DOWNLOAD QR CODE
+  // ==========================================
+  const modalGuestQr = document.getElementById('modal-guest-qr');
+  const btnCloseQrModal = document.getElementById('btn-close-qr-modal');
+  const btnCancelQrModal = document.getElementById('btn-cancel-qr-modal');
+  const btnDownloadModalQr = document.getElementById('btn-download-modal-qr');
+  const qrModalName = document.getElementById('qr-modal-guest-name');
+  const qrModalCat = document.getElementById('qr-modal-guest-category');
+  const qrModalCanvasBox = document.getElementById('qr-modal-canvas-box');
+
+  let currentModalQrName = '';
+
+  function openGuestQrModal(name, category, url) {
+    if (!modalGuestQr) return;
+    currentModalQrName = name || 'Tamu';
+    if (qrModalName) qrModalName.textContent = name;
+    if (qrModalCat) qrModalCat.textContent = category || 'Tamu';
+
+    if (qrModalCanvasBox) {
+      qrModalCanvasBox.innerHTML = '';
+      if (typeof QRCode !== 'undefined') {
+        try {
+          new QRCode(qrModalCanvasBox, {
+            text: url,
+            width: 190,
+            height: 190,
+            colorDark: '#1d3d55',
+            colorLight: '#ffffff',
+            correctLevel: (typeof QRCode !== 'undefined' && QRCode.CorrectLevel && QRCode.CorrectLevel.H) ? QRCode.CorrectLevel.H : 2
+          });
+        } catch (e) {
+          console.error('Error rendering modal QR:', e);
+        }
+      }
+    }
+
+    modalGuestQr.classList.remove('hidden');
+  }
+
+  function closeGuestQrModal() {
+    if (modalGuestQr) modalGuestQr.classList.add('hidden');
+  }
+
+  if (btnCloseQrModal) btnCloseQrModal.addEventListener('click', closeGuestQrModal);
+  if (btnCancelQrModal) btnCancelQrModal.addEventListener('click', closeGuestQrModal);
+  if (modalGuestQr) {
+    modalGuestQr.addEventListener('click', (e) => {
+      if (e.target === modalGuestQr) closeGuestQrModal();
+    });
+  }
+
+  if (btnDownloadModalQr) {
+    btnDownloadModalQr.addEventListener('click', () => {
+      if (!qrModalCanvasBox) return;
+      downloadQRCodeFromContainer(qrModalCanvasBox, `QR_Undangan_${currentModalQrName.replace(/[^a-zA-Z0-9]/g, '_')}.png`);
+    });
+  }
+
+  function downloadQRCodeFromContainer(container, filename = 'qr-code.png') {
+    if (!container) return;
+    const canvas = container.querySelector('canvas');
+    if (canvas) {
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('QR Code berhasil diunduh!');
+      return;
+    }
+    const img = container.querySelector('img');
+    if (img && img.src) {
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = img.src;
+      link.click();
+      showToast('QR Code berhasil diunduh!');
+      return;
+    }
+    showToast('Gagal mengunduh QR Code.');
   }
 
   // ==========================================

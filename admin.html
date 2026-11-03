@@ -12,6 +12,8 @@
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- QR Code Generator Library -->
+  <script src="assets/js/qrcode.min.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -425,6 +427,24 @@
               <textarea id="gen-output-wa" rows="6" readonly class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs font-sans text-slate-700 leading-relaxed outline-none resize-none"></textarea>
             </div>
 
+            <!-- QR Code Tamu Tergenerate -->
+            <div class="p-4 bg-white rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center gap-4">
+              <div id="gen-qrcode-wrapper" class="p-2 bg-white rounded-xl border border-slate-200 shadow-xs flex items-center justify-center min-w-[130px] min-h-[130px]"></div>
+              <div class="space-y-2 text-center sm:text-left flex-1 min-w-0">
+                <div>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-primary border border-blue-200 uppercase tracking-wider">QR Code Akses</span>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-800 mt-1">QR Code Tamu Tergenerate</h4>
+                  <p class="text-[11px] text-slate-500">QR Code personal ini dapat diunduh untuk dikirimkan kepada tamu undangan.</p>
+                </div>
+                <div class="flex items-center justify-center sm:justify-start gap-2 pt-0.5">
+                  <button type="button" id="btn-download-gen-qr" class="px-3.5 py-2 bg-primary hover:bg-[#344f67] text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer">
+                    <span class="material-symbols-outlined text-sm">download</span>
+                    <span>Download QR Code (PNG)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <!-- Action buttons -->
             <div class="flex items-center gap-2">
               <a id="btn-send-whatsapp" href="#" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all cursor-pointer">
@@ -469,13 +489,14 @@
                   <th class="py-3 px-4">Nama Tamu Undangan</th>
                   <th class="py-3 px-4">Kategori</th>
                   <th class="py-3 px-4">WhatsApp</th>
+                  <th class="py-3 px-4 text-center">QR Code</th>
                   <th class="py-3 px-4">Tautan Personal</th>
                   <th class="py-3 px-4 text-right w-24">Aksi</th>
                 </tr>
               </thead>
               <tbody id="guests-table-body">
                 <tr>
-                  <td colspan="6" class="text-center py-8 text-slate-400 text-xs">Memuat daftar tamu...</td>
+                  <td colspan="7" class="text-center py-8 text-slate-400 text-xs">Memuat daftar tamu...</td>
                 </tr>
               </tbody>
             </table>
@@ -558,6 +579,50 @@
             <span>Simpan Semua Tamu</span>
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LIHAT & DOWNLOAD QR CODE TAMU -->
+  <div id="modal-guest-qr" class="hidden fixed inset-0 z-50 bg-[#1d3d55]/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 text-center space-y-4 animate-scale-up">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-xl">qr_code_2</span>
+          <h3 class="text-sm font-bold text-[#1d3d55]">QR Code Kehadiran Tamu</h3>
+        </div>
+        <button id="btn-close-qr-modal" type="button" class="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-1">
+        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Tamu Undangan</p>
+        <h4 id="qr-modal-guest-name" class="font-serif text-lg font-bold text-[#1d3d55] truncate">Nama Tamu</h4>
+        <span id="qr-modal-guest-category" class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-primary border border-blue-200">
+          Tamu
+        </span>
+      </div>
+
+      <!-- QR Container -->
+      <div class="flex justify-center py-2">
+        <div class="p-3 bg-white rounded-2xl border-2 border-dashed border-slate-200 shadow-inner inline-block">
+          <div id="qr-modal-canvas-box" class="flex items-center justify-center min-w-[190px] min-h-[190px]"></div>
+        </div>
+      </div>
+
+      <p class="text-[11px] text-slate-500">
+        Tamu dapat menunjukkan QR Code ini untuk verifikasi kehadiran di resepsi.
+      </p>
+
+      <div class="pt-2 flex flex-col gap-2">
+        <button type="button" id="btn-download-modal-qr" class="w-full py-2.5 bg-primary hover:bg-[#344f67] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-sm">download</span>
+          <span>Download QR Code (PNG)</span>
+        </button>
+        <button type="button" id="btn-cancel-qr-modal" class="w-full py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-medium cursor-pointer">
+          Tutup
+        </button>
       </div>
     </div>
   </div>
