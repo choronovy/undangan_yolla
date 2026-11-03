@@ -13,7 +13,7 @@ const SUPABASE_CONFIG = {
   url: 'https://kahpogezngbjratuhyzl.supabase.co',
 
   // Publishable Key Anda:
-  anonKey: ''
+  anonKey: 'sb_publishable_2R34px70iUlw2C10eS4M2A_yqu7Oy9N'
 };
 
 // Inisialisasi client Supabase secara global
