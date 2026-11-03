@@ -484,6 +484,33 @@
     showToast('Ucapan berhasil dihapus.');
   }
 
+  // Helper URL Undangan Tamu (Bersihkan '/admin' dan '/admin.html' dari URL)
+  function getInvitationBaseUrl() {
+    const origin = window.location.origin;
+    let pathname = window.location.pathname;
+    pathname = pathname.replace(/\/admin(?:\.html)?\/?$/i, '');
+    if (!pathname || pathname === '') {
+      pathname = '/';
+    } else if (!pathname.endsWith('/')) {
+      pathname += '/';
+    }
+    return origin + pathname;
+  }
+
+  function formatGuestUrl(guestUrl, guestName) {
+    const baseUrl = getInvitationBaseUrl();
+    if (guestUrl && typeof guestUrl === 'string') {
+      // Jika tersimpan dengan path /admin, bersihkan
+      if (guestUrl.includes('/admin?') || guestUrl.includes('/admin/?') || guestUrl.includes('/admin.html?')) {
+        return guestUrl.replace(/\/admin(?:\.html)?\/?\?/i, '/?');
+      }
+      if (!guestUrl.includes('/admin')) {
+        return guestUrl;
+      }
+    }
+    return `${baseUrl}?to=${encodeURIComponent(guestName || '')}`;
+  }
+
   // B. BUKU TAMU & GENERATOR (GUESTS)
   async function loadGuests() {
     let localGuests = [];
@@ -562,7 +589,7 @@
     }
 
     guestsTableBody.innerHTML = filtered.map((guest, idx) => {
-      const fullUrl = guest.url || (window.location.origin + window.location.pathname.replace('admin.html', 'index.html') + '?to=' + encodeURIComponent(guest.name || ''));
+      const fullUrl = formatGuestUrl(guest.url, guest.name);
       const waMsg = buildWhatsAppMessage(guest.name, fullUrl);
       const waLink = guest.phone ?
         `https://wa.me/${guest.phone}?text=${encodeURIComponent(waMsg)}` :
@@ -697,7 +724,7 @@
         phone = '62' + phone;
       }
 
-      const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
+      const baseUrl = getInvitationBaseUrl();
       const guestUrl = `${baseUrl}?to=${encodeURIComponent(fullName)}`;
       const waMsg = buildWhatsAppMessage(fullName, guestUrl);
 
@@ -813,7 +840,7 @@
 
       const lines = names.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
 
-      const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
+      const baseUrl = getInvitationBaseUrl();
       let count = 0;
 
       lines.forEach((line) => {
@@ -1390,7 +1417,7 @@ Salam hangat,
         name: cleanInput,
         phone: '',
         category: 'Tamu',
-        url: window.location.origin + window.location.pathname.replace('admin.html', 'index.html') + '?to=' + encodeURIComponent(cleanInput),
+        url: `${getInvitationBaseUrl()}?to=${encodeURIComponent(cleanInput)}`,
         created_at: getLocalTimestamp()
       };
       allGuests.push(matchedGuest);
