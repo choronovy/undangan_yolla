@@ -114,6 +114,14 @@ html, body {
   transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   min-width: 50px;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  user-select: none;
+}
+
+.nav-dock-item:focus,
+.nav-dock-item:focus-visible {
+  outline: none;
 }
 
 .nav-dock-item .nav-icon-wrap {
@@ -173,13 +181,27 @@ html, body {
   transform: scale(1);
 }
 
-.nav-dock-item:hover:not(.active) {
-  color: #43617b;
-  transform: translateY(-1px);
+/* Non-active state guarantee (Pastikan item tidak aktif tidak memiliki efek highlight) */
+.nav-dock-item:not(.active) .nav-dot {
+  opacity: 0 !important;
+  transform: scale(0) !important;
 }
 
-.nav-dock-item:hover:not(.active) .nav-icon-wrap {
-  background-color: rgba(67, 97, 123, 0.08);
+.nav-dock-item:not(.active) .nav-icon-wrap {
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+/* Desktop Hover Only (Mencegah efek hover 'lengket' di layar sentuh HP) */
+@media (hover: hover) and (pointer: fine) {
+  .nav-dock-item:hover:not(.active) {
+    color: #43617b;
+    transform: translateY(-1px);
+  }
+
+  .nav-dock-item:hover:not(.active) .nav-icon-wrap {
+    background-color: rgba(67, 97, 123, 0.08) !important;
+  }
 }
 
 /* MUSIC FLOATING & AUDIO BARS ANIMATION */

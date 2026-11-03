@@ -736,7 +736,13 @@
     const navLinks = document.querySelectorAll('#bottom-dock-nav a[data-path]');
     if (!navLinks.length) return;
 
+    const sectionIds = ['beranda', 'mempelai', 'acara', 'galeri', 'qrcode', 'ucapan'];
+    let isNavClicking = false;
+    let navClickTimeout = null;
+    let scrollTimeout = null;
+
     function setActiveTab(path) {
+      if (!path) return;
       navLinks.forEach((link) => {
         if (link.getAttribute('data-path') === path) {
           link.classList.add('active');
@@ -746,44 +752,79 @@
       });
     }
 
+    // ScrollSpy presisi menggunakan getBoundingClientRect()
+    function updateActiveOnScroll() {
+      if (isNavClicking) return;
+
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const scrollHeight = document.documentElement.scrollHeight;
+
+      // 1. Jika di paling atas halaman (masih sampul / beranda)
+      if (scrollY < 120) {
+        setActiveTab('beranda');
+        return;
+      }
+
+      // 2. Jika sudah scroll sampai mendekati paling bawah halaman
+      if (windowHeight + scrollY >= scrollHeight - 80) {
+        setActiveTab('ucapan');
+        return;
+      }
+
+      // 3. Evaluasi section berdasarkan posisi relatif di layar (sweet spot ~35% dari atas viewport)
+      const triggerPoint = windowHeight * 0.35;
+      let activeSectionId = null;
+
+      for (let i = 0; i < sectionIds.length; i++) {
+        const section = document.getElementById(sectionIds[i]);
+        if (!section) continue;
+        const rect = section.getBoundingClientRect();
+        // Section aktif jika bagian atasnya telah mencapai trigger point dan belum keluar dari viewport
+        if (rect.top <= triggerPoint && rect.bottom > 60) {
+          activeSectionId = sectionIds[i];
+        }
+      }
+
+      if (activeSectionId) {
+        setActiveTab(activeSectionId);
+      }
+    }
+
+    // Handle klik pada tombol dock nav dengan scroll lock (agar tidak dioverwrite saat animasi smooth scroll)
     navLinks.forEach((link) => {
       link.addEventListener('click', function (e) {
         e.preventDefault();
         const targetId = this.getAttribute('data-path');
         const targetEl = document.getElementById(targetId);
         if (targetEl) {
+          isNavClicking = true;
           setActiveTab(targetId);
+
+          if (navClickTimeout) clearTimeout(navClickTimeout);
+          navClickTimeout = setTimeout(() => {
+            isNavClicking = false;
+            setActiveTab(targetId);
+          }, 850);
+
           const headerOffset = 15;
           const elementPosition = targetEl.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          const offsetPosition = elementPosition + (window.pageYOffset || document.documentElement.scrollTop) - headerOffset;
           window.scrollTo({
-            top: offsetPosition,
+            top: Math.max(0, offsetPosition),
             behavior: 'smooth'
           });
         }
       });
     });
 
-    // Real-time ScrollSpy untuk mengupdate tab aktif saat digulir
-    const sectionIds = ['beranda', 'mempelai', 'acara', 'galeri', 'qrcode', 'ucapan'];
-    let scrollTimeout;
-
     window.addEventListener('scroll', () => {
       if (scrollTimeout) cancelAnimationFrame(scrollTimeout);
-      scrollTimeout = requestAnimationFrame(() => {
-        const scrollPosition = window.scrollY + 180;
-        for (let i = sectionIds.length - 1; i >= 0; i--) {
-          const section = document.getElementById(sectionIds[i]);
-          if (section) {
-            const sectionTop = section.offsetTop;
-            if (scrollPosition >= sectionTop) {
-              setActiveTab(sectionIds[i]);
-              break;
-            }
-          }
-        }
-      });
+      scrollTimeout = requestAnimationFrame(updateActiveOnScroll);
     }, { passive: true });
+
+    // Initial sync saat halaman siap
+    updateActiveOnScroll();
   }
 
   // ==========================================
