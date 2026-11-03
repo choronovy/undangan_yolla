@@ -92,11 +92,3 @@ BEGIN
     ALTER PUBLICATION supabase_realtime ADD TABLE public.checkins;
   END IF;
 END $$;
-
--- 7. Data Awal Contoh Tamu (Opsional)
-INSERT INTO public.guests (id, name, phone, category, url, created_at)
-VALUES 
-  ('guest_1', 'Dimas Prasetya & Partner', '6281234567890', 'Sahabat', 'index.html?to=Dimas+Prasetya+%26+Partner', NOW()),
-  ('guest_2', 'Bpk. Ir. Bambang Hermanto & Keluarga', '6281987654321', 'Keluarga', 'index.html?to=Bpk.+Ir.+Bambang+Hermanto+%26+Keluarga', NOW()),
-  ('guest_3', 'Alisa Maharani, S.Kom & Partner', '6285712345678', 'Rekan Kerja', 'index.html?to=Alisa+Maharani%2C+S.Kom+%26+Partner', NOW())
-ON CONFLICT (id) DO NOTHING;

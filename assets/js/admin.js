@@ -486,51 +486,45 @@
 
   // B. BUKU TAMU & GENERATOR (GUESTS)
   async function loadGuests() {
-    let baseGuests = [];
+    let localGuests = [];
+    let hasLocal = false;
     try {
-      const res = await fetch(`${GUESTS_JSON_URL}?t=${Date.now()}`);
-      if (res.ok) {
-        baseGuests = await res.json();
+      const raw = localStorage.getItem(GUESTS_STORAGE_KEY);
+      if (raw !== null) {
+        localGuests = JSON.parse(raw) || [];
+        hasLocal = true;
       }
     } catch (e) {}
 
-    let storedGuests = [];
-    try {
-      const raw = localStorage.getItem(GUESTS_STORAGE_KEY);
-      if (raw) storedGuests = JSON.parse(raw);
-    } catch (e) {}
-
-    let merged = Array.isArray(storedGuests) && storedGuests.length > 0 ? [...storedGuests] : [...baseGuests];
-    if (Array.isArray(baseGuests)) {
-      baseGuests.forEach((b) => {
-        if (!merged.some((m) => m.id === b.id || m.name === b.name)) {
-          merged.push(b);
+    if (!hasLocal) {
+      let baseGuests = [];
+      try {
+        const res = await fetch(`${GUESTS_JSON_URL}?t=${Date.now()}`);
+        if (res.ok) {
+          baseGuests = await res.json();
         }
-      });
+      } catch (e) {}
+      localGuests = Array.isArray(baseGuests) ? baseGuests : [];
     }
 
-    // Ambil dari Supabase Cloud jika terhubung
+    // Jika Supabase Cloud aktif, data dari cloud menjadi sumber kebenaran (Source of Truth)
     if (typeof supabaseClient !== 'undefined' && supabaseClient) {
       try {
         const { data: cloudGuests, error } = await supabaseClient
           .from('guests')
           .select('*')
           .order('created_at', { ascending: false });
-        if (!error && Array.isArray(cloudGuests) && cloudGuests.length > 0) {
-          cloudGuests.forEach((cg) => {
-            if (!merged.some((m) => m.id === cg.id || m.name === cg.name)) {
-              merged.push(cg);
-            }
-          });
+        if (!error && Array.isArray(cloudGuests)) {
+          localGuests = cloudGuests;
         }
       } catch (e) {
         console.warn('[Supabase Guests Fetch Error]', e);
       }
     }
 
-    allGuests = merged;
+    allGuests = localGuests;
     try {
-      localStorage.setItem(GUESTS_STORAGE_KEY, JSON.stringify(merged));
+      localStorage.setItem(GUESTS_STORAGE_KEY, JSON.stringify(allGuests));
     } catch (e) {}
 
     if (badgeTotalGuests) badgeTotalGuests.textContent = `${allGuests.length} Tamu Terdaftar`;
@@ -661,7 +655,7 @@
     });
   }
 
-  function deleteGuest(guestId) {
+  async function deleteGuest(guestId) {
     if (!confirm('Apakah Anda yakin ingin menghapus tamu ini dari daftar?')) return;
 
     allGuests = allGuests.filter((g) => g.id !== guestId);
@@ -671,12 +665,11 @@
 
     // Hapus dari Supabase Cloud
     if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-      supabaseClient
-        .from('guests')
-        .delete()
-        .eq('id', guestId)
-        .then(() => {})
-        .catch((e) => console.warn('[Supabase Guest Delete Error]', e));
+      try {
+        await supabaseClient.from('guests').delete().eq('id', guestId);
+      } catch (e) {
+        console.warn('[Supabase Guest Delete Error]', e);
+      }
     }
 
     if (badgeTotalGuests) badgeTotalGuests.textContent = `${allGuests.length} Tamu Terdaftar`;
@@ -1177,12 +1170,8 @@ Salam hangat,
           .from('checkins')
           .select('*')
           .order('checkin_time', { ascending: false });
-        if (!error && Array.isArray(cloudCheckins) && cloudCheckins.length > 0) {
-          cloudCheckins.forEach((cc) => {
-            if (!localCheckins.some((lc) => lc.id === cc.id || (lc.name || '').toLowerCase() === (cc.name || '').toLowerCase())) {
-              localCheckins.push(cc);
-            }
-          });
+        if (!error && Array.isArray(cloudCheckins)) {
+          localCheckins = cloudCheckins;
         }
       } catch (e) {
         console.warn('[Supabase Checkins Fetch Error]', e);
