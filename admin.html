@@ -14,6 +14,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- QR Code Generator Library -->
   <script src="assets/js/qrcode.min.js"></script>
+  <!-- HTML5 QR Code Camera Scanner Library -->
+  <script src="assets/js/html5-qrcode.min.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -160,7 +162,14 @@
             <span id="nav-count-guests" class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 text-slate-700 font-bold">0</span>
           </button>
 
-          <!-- Menu Bar Item 3: Settings -->
+          <!-- Menu Bar Item 3: Scan QR & Presensi -->
+          <button type="button" class="admin-tab-btn inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-white/60 transition-all cursor-pointer" data-tab="tab-presensi">
+            <span class="material-symbols-outlined text-[17px]">qr_code_scanner</span>
+            <span>Scan QR &amp; Presensi</span>
+            <span id="nav-count-checkedin" class="px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-100 text-emerald-700 font-bold">0</span>
+          </button>
+
+          <!-- Menu Bar Item 4: Settings -->
           <button type="button" class="admin-tab-btn inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap text-slate-600 hover:text-slate-900 hover:bg-white/60 transition-all cursor-pointer" data-tab="tab-settings">
             <span class="material-symbols-outlined text-[17px]">settings</span>
             <span>Pengaturan Acara</span>
@@ -205,6 +214,14 @@
                 <span>Generator &amp; Tamu</span>
               </span>
               <span class="px-2 py-0.5 rounded-full text-[10px] bg-slate-200 text-slate-700 font-bold" id="drawer-guests-badge">0</span>
+            </button>
+
+            <button type="button" class="admin-drawer-tab-btn w-full flex items-center justify-between p-3 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 text-left transition-all" data-tab="tab-presensi">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[19px]">qr_code_scanner</span>
+                <span>Scan QR &amp; Presensi</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-700 font-bold" id="drawer-checkedin-badge">0</span>
             </button>
 
             <button type="button" class="admin-drawer-tab-btn w-full flex items-center justify-between p-3 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 text-left transition-all" data-tab="tab-settings">
@@ -490,13 +507,235 @@
                   <th class="py-3 px-4">Kategori</th>
                   <th class="py-3 px-4">WhatsApp</th>
                   <th class="py-3 px-4 text-center">QR Code</th>
+                  <th class="py-3 px-4 text-center">Presensi</th>
                   <th class="py-3 px-4">Tautan Personal</th>
                   <th class="py-3 px-4 text-right w-24">Aksi</th>
                 </tr>
               </thead>
               <tbody id="guests-table-body">
                 <tr>
-                  <td colspan="7" class="text-center py-8 text-slate-400 text-xs">Memuat daftar tamu...</td>
+                  <td colspan="8" class="text-center py-8 text-slate-400 text-xs">Memuat daftar tamu...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==============================================================
+           TAB 3: SCAN QR & DATA PRESENSI KEHADIRAN TAMU
+           ============================================================== -->
+      <div id="tab-presensi" class="admin-tab-content hidden space-y-6">
+
+        <!-- 4 KPI STATS PRESENSI -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <!-- Total Tamu -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-blue-50 text-primary flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-2xl">group</span>
+            </div>
+            <div class="min-w-0">
+              <p class="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Total Undangan</p>
+              <h3 id="stat-presensi-total" class="text-xl sm:text-2xl font-bold text-[#1d3d55]">0</h3>
+            </div>
+          </div>
+
+          <!-- Sudah Hadir (Scan QR) -->
+          <div class="bg-white p-4 rounded-2xl border border-emerald-200 shadow-xs flex items-center gap-3 bg-emerald-50/20">
+            <div class="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-2xl">check_circle</span>
+            </div>
+            <div class="min-w-0">
+              <p class="text-[11px] text-emerald-700 uppercase tracking-wider font-semibold">Sudah Scan QR</p>
+              <h3 id="stat-presensi-checkedin" class="text-xl sm:text-2xl font-bold text-emerald-800">0</h3>
+            </div>
+          </div>
+
+          <!-- Belum Hadir -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-2xl">pending</span>
+            </div>
+            <div class="min-w-0">
+              <p class="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Belum Hadir</p>
+              <h3 id="stat-presensi-pending" class="text-xl sm:text-2xl font-bold text-slate-700">0</h3>
+            </div>
+          </div>
+
+          <!-- Persentase Kehadiran -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-2xl">donut_large</span>
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Persentase Hadir</p>
+              <h3 id="stat-presensi-percent" class="text-xl sm:text-2xl font-bold text-[#1d3d55]">0%</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCANNER SECTION & MANUAL CHECK-IN -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+          <!-- Left / Main: Live Camera Scanner -->
+          <div class="lg:col-span-7 bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">qr_code_scanner</span>
+                <h3 class="text-sm sm:text-base font-bold text-[#1d3d55]">Kamera Scanner QR Code</h3>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                Mode Resepsionis
+              </span>
+            </div>
+
+            <!-- Scanner Camera Box -->
+            <div class="relative bg-slate-950 rounded-2xl overflow-hidden min-h-[260px] sm:min-h-[320px] flex flex-col items-center justify-center border-2 border-dashed border-slate-700">
+              
+              <!-- Video Mount Container for html5-qrcode -->
+              <div id="qr-camera-stream" class="w-full h-full flex items-center justify-center"></div>
+
+              <!-- Placeholder when camera is stopped -->
+              <div id="qr-camera-placeholder" class="text-center p-6 space-y-3">
+                <div class="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md text-white flex items-center justify-center mx-auto border border-white/20">
+                  <span class="material-symbols-outlined text-3xl">photo_camera</span>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-white">Scanner Kamera Siap</h4>
+                  <p class="text-xs text-slate-300 max-w-xs mx-auto mt-1">
+                    Arahkan kamera ke QR Code tamu undangan untuk verifikasi kehadiran otomatis secara langsung.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Scanning laser effect when active -->
+              <div id="qr-scanner-laser" class="hidden absolute inset-x-8 top-1/2 h-0.5 bg-emerald-400 shadow-[0_0_12px_#34d399] animate-pulse pointer-events-none"></div>
+            </div>
+
+            <!-- Camera Controls -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button type="button" id="btn-start-scanner" class="flex-1 sm:flex-none px-4 py-2.5 bg-primary hover:bg-[#344f67] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer">
+                  <span class="material-symbols-outlined text-base">videocam</span>
+                  <span>Nyalakan Kamera Scanner</span>
+                </button>
+                <button type="button" id="btn-stop-scanner" class="hidden flex-1 sm:flex-none px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer">
+                  <span class="material-symbols-outlined text-base">videocam_off</span>
+                  <span>Hentikan Kamera</span>
+                </button>
+              </div>
+
+              <!-- Scan from Image File -->
+              <div class="w-full sm:w-auto text-right">
+                <label for="qr-file-input" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer w-full sm:w-auto">
+                  <span class="material-symbols-outlined text-base">image</span>
+                  <span>Scan dari Foto Galeri</span>
+                </label>
+                <input type="file" id="qr-file-input" accept="image/*" class="hidden">
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Manual Check-In & Notifikasi Hasil Scan -->
+          <div class="lg:col-span-5 space-y-4">
+            
+            <!-- Manual Check-In Box -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3.5">
+              <div class="flex items-center gap-2 border-b border-slate-100 pb-2.5">
+                <span class="material-symbols-outlined text-primary text-lg">edit_note</span>
+                <h3 class="text-xs sm:text-sm font-bold text-[#1d3d55]">Check-In Cepat Manual</h3>
+              </div>
+              <p class="text-xs text-slate-500">
+                Jika kamera tidak tersedia atau tamu hanya menyebutkan nama / kode tiket:
+              </p>
+              <div class="space-y-2">
+                <div class="relative">
+                  <span class="material-symbols-outlined text-slate-400 text-lg absolute left-3.5 top-1/2 -translate-y-1/2">search</span>
+                  <input type="text" id="manual-checkin-input" placeholder="Ketik nama tamu atau kode tiket (cth: Dimas atau RY-2711)..." class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary outline-none">
+                </div>
+                <button type="button" id="btn-manual-checkin" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors cursor-pointer">
+                  <span class="material-symbols-outlined text-base">check</span>
+                  <span>Verifikasi &amp; Check-In Tamu</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Real-Time Scan Result Feedback Card -->
+            <div id="scan-feedback-card" class="hidden p-5 rounded-2xl border transition-all animate-scale-up space-y-3">
+              <div class="flex items-center gap-3">
+                <div id="scan-feedback-icon" class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <span class="material-symbols-outlined text-2xl">check_circle</span>
+                </div>
+                <div class="min-w-0">
+                  <span id="scan-feedback-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    VALID
+                  </span>
+                  <h4 id="scan-feedback-name" class="text-base font-bold text-slate-800 truncate mt-0.5">Nama Tamu</h4>
+                  <p id="scan-feedback-category" class="text-xs text-slate-500">Kategori: Tamu</p>
+                </div>
+              </div>
+
+              <div class="bg-white/80 rounded-xl p-3 border border-slate-100 space-y-1 text-xs">
+                <div class="flex items-center justify-between">
+                  <span class="text-slate-400">Kode Tiket:</span>
+                  <span id="scan-feedback-code" class="font-mono font-bold text-slate-700">-</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-slate-400">Waktu Scan:</span>
+                  <span id="scan-feedback-time" class="font-semibold text-slate-700">-</span>
+                </div>
+              </div>
+
+              <p id="scan-feedback-note" class="text-[11px] text-slate-500 leading-relaxed"></p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- DAFTAR DATA ORANG YANG SUDAH SCAN (PRESENSI KEHADIRAN) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden space-y-0">
+          <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-[#1d3d55] flex items-center gap-2">
+                <span>Daftar Tamu yang Sudah Scan QR</span>
+                <span id="badge-total-checkedin" class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+                  0 Hadir
+                </span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Riwayat presensi tamu yang telah berhasil diverifikasi melalui scan QR atau check-in resepsionis</p>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+              <input type="text" id="search-checkedin-input" placeholder="Cari nama tamu hadir..." class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none w-36 sm:w-48 focus:ring-1 focus:ring-primary">
+              <button id="btn-export-presensi-csv" type="button" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors shadow-xs cursor-pointer">
+                <span class="material-symbols-outlined text-[16px]">file_download</span>
+                <span>Export Presensi (CSV)</span>
+              </button>
+              <button id="btn-reset-presensi" type="button" class="px-3 py-1.5 bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 rounded-xl text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer" title="Reset Semua Presensi">
+                <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                <span class="hidden sm:inline">Reset Presensi</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[700px] text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50/80 text-slate-500 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-200">
+                  <th class="py-3 px-4 w-12 text-center">No</th>
+                  <th class="py-3 px-4">Nama Tamu</th>
+                  <th class="py-3 px-4">Kategori</th>
+                  <th class="py-3 px-4">Kode Tiket</th>
+                  <th class="py-3 px-4">Waktu Check-In</th>
+                  <th class="py-3 px-4 text-center">Status Presensi</th>
+                  <th class="py-3 px-4 text-right w-24">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="presensi-table-body">
+                <tr>
+                  <td colspan="7" class="text-center py-8 text-slate-400 text-xs">Belum ada tamu yang scan QR kehadiran.</td>
                 </tr>
               </tbody>
             </table>
