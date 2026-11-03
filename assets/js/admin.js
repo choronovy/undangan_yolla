@@ -120,9 +120,15 @@
       adminRealtimeSubscribed = true;
       try {
         supabaseClient
-          .channel('admin_wishes_realtime')
+          .channel('admin_cloud_realtime')
           .on('postgres_changes', { event: '*', schema: 'public', table: 'wishes' }, () => {
             loadWishes();
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'guests' }, () => {
+            loadGuests();
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'checkins' }, () => {
+            loadCheckins();
           })
           .subscribe();
       } catch (e) {}
@@ -503,6 +509,25 @@
       });
     }
 
+    // Ambil dari Supabase Cloud jika terhubung
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      try {
+        const { data: cloudGuests, error } = await supabaseClient
+          .from('guests')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && Array.isArray(cloudGuests) && cloudGuests.length > 0) {
+          cloudGuests.forEach((cg) => {
+            if (!merged.some((m) => m.id === cg.id || m.name === cg.name)) {
+              merged.push(cg);
+            }
+          });
+        }
+      } catch (e) {
+        console.warn('[Supabase Guests Fetch Error]', e);
+      }
+    }
+
     allGuests = merged;
     try {
       localStorage.setItem(GUESTS_STORAGE_KEY, JSON.stringify(merged));
@@ -644,6 +669,16 @@
       localStorage.setItem(GUESTS_STORAGE_KEY, JSON.stringify(allGuests));
     } catch (e) {}
 
+    // Hapus dari Supabase Cloud
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      supabaseClient
+        .from('guests')
+        .delete()
+        .eq('id', guestId)
+        .then(() => {})
+        .catch((e) => console.warn('[Supabase Guest Delete Error]', e));
+    }
+
     if (badgeTotalGuests) badgeTotalGuests.textContent = `${allGuests.length} Tamu Terdaftar`;
     if (statTotalGuests) statTotalGuests.textContent = allGuests.length;
     renderGuestsTable();
@@ -687,6 +722,15 @@
       try {
         localStorage.setItem(GUESTS_STORAGE_KEY, JSON.stringify(allGuests));
       } catch (e) {}
+
+      // Simpan ke Supabase Cloud
+      if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+        supabaseClient
+          .from('guests')
+          .insert([newGuest])
+          .then(() => {})
+          .catch((e) => console.warn('[Supabase Guest Insert Error]', e));
+      }
 
       if (badgeTotalGuests) badgeTotalGuests.textContent = `${allGuests.length} Tamu Terdaftar`;
       if (statTotalGuests) statTotalGuests.textContent = allGuests.length;
@@ -1118,13 +1162,34 @@ Salam hangat,
     return allCheckins.some(c => (c.guest_id && c.guest_id === guest.id) || (c.name || '').toLowerCase().trim() === gName);
   }
 
-  function loadCheckins() {
+  async function loadCheckins() {
+    let localCheckins = [];
     try {
       const raw = localStorage.getItem(CHECKINS_STORAGE_KEY);
-      if (raw) allCheckins = JSON.parse(raw);
+      if (raw) localCheckins = JSON.parse(raw);
     } catch (e) {
-      allCheckins = [];
+      localCheckins = [];
     }
+
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      try {
+        const { data: cloudCheckins, error } = await supabaseClient
+          .from('checkins')
+          .select('*')
+          .order('checkin_time', { ascending: false });
+        if (!error && Array.isArray(cloudCheckins) && cloudCheckins.length > 0) {
+          cloudCheckins.forEach((cc) => {
+            if (!localCheckins.some((lc) => lc.id === cc.id || (lc.name || '').toLowerCase() === (cc.name || '').toLowerCase())) {
+              localCheckins.push(cc);
+            }
+          });
+        }
+      } catch (e) {
+        console.warn('[Supabase Checkins Fetch Error]', e);
+      }
+    }
+
+    allCheckins = localCheckins;
     renderPresensiUI();
   }
 
@@ -1269,6 +1334,16 @@ Salam hangat,
     if (!confirm('Apakah Anda yakin ingin membatalkan presensi kehadiran tamu ini?')) return;
     allCheckins = allCheckins.filter(c => c.id !== checkinId);
     saveCheckins();
+
+    // Hapus presensi dari Supabase Cloud
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      supabaseClient
+        .from('checkins')
+        .delete()
+        .eq('id', checkinId)
+        .then(() => {})
+        .catch((e) => console.warn('[Supabase Checkin Delete Error]', e));
+    }
     showToast('Presensi kehadiran tamu berhasil dibatalkan.');
   }
 
@@ -1400,6 +1475,15 @@ Salam hangat,
 
     allCheckins.unshift(newCheckinRecord);
     saveCheckins();
+
+    // Simpan presensi ke Supabase Cloud
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      supabaseClient
+        .from('checkins')
+        .insert([newCheckinRecord])
+        .then(() => {})
+        .catch((e) => console.warn('[Supabase Checkin Insert Error]', e));
+    }
 
     if (feedbackCard) {
       feedbackCard.className = 'p-5 rounded-2xl border transition-all animate-scale-up space-y-3 bg-emerald-50/80 border-emerald-300';
