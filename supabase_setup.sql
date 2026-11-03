@@ -68,10 +68,30 @@ CREATE POLICY "Allow public insert checkins" ON public.checkins FOR INSERT WITH 
 DROP POLICY IF EXISTS "Allow public delete checkins" ON public.checkins;
 CREATE POLICY "Allow public delete checkins" ON public.checkins FOR DELETE USING (true);
 
--- 6. Aktifkan Realtime Publikasi (Supabase WebSocket Realtime)
-ALTER PUBLICATION supabase_realtime ADD TABLE public.wishes;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.guests;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.checkins;
+-- 6. Aktifkan Realtime Publikasi secara Aman (Tidak akan error jika tabel sudah terdaftar)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables 
+    WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'wishes'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.wishes;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables 
+    WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'guests'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.guests;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables 
+    WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'checkins'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.checkins;
+  END IF;
+END $$;
 
 -- 7. Data Awal Contoh Tamu (Opsional)
 INSERT INTO public.guests (id, name, phone, category, url, created_at)
