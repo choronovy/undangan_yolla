@@ -484,11 +484,34 @@
     showToast('Ucapan berhasil dihapus.');
   }
 
-  // Helper URL Undangan Tamu (Bersihkan '/admin' dan '/admin.html' dari URL)
+  // Helper URL Undangan Tamu (Dukungan Custom Domain & Pembersih Otomatis /admin)
   function getInvitationBaseUrl() {
+    const domainInput = document.getElementById('gen-custom-domain');
+    if (domainInput && domainInput.value && domainInput.value.trim() !== '') {
+      let custom = domainInput.value.trim();
+      if (!custom.startsWith('http://') && !custom.startsWith('https://')) {
+        custom = 'https://' + custom;
+      }
+      custom = custom.replace(/\/admin(?:\.html)?\/?.*$/i, '');
+      if (!custom.endsWith('/')) custom += '/';
+      try {
+        localStorage.setItem('wedding_custom_base_url', custom);
+      } catch (e) {}
+      return custom;
+    }
+
+    try {
+      const stored = localStorage.getItem('wedding_custom_base_url');
+      if (stored && stored.trim() !== '') {
+        let clean = stored.trim().replace(/\/admin(?:\.html)?\/?.*$/i, '');
+        if (!clean.endsWith('/')) clean += '/';
+        return clean;
+      }
+    } catch (e) {}
+
     const origin = window.location.origin;
     let pathname = window.location.pathname;
-    pathname = pathname.replace(/\/admin(?:\.html)?\/?$/i, '');
+    pathname = pathname.replace(/\/admin(?:\.html)?\/?.*$/i, '');
     if (!pathname || pathname === '') {
       pathname = '/';
     } else if (!pathname.endsWith('/')) {
