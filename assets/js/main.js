@@ -82,6 +82,30 @@
     });
   }
 
+  // Otomatis hentikan musik saat pengguna keluar dari browser / ganti tab / minimize / kunci layar HP
+  let wasPlayingBeforeHidden = false;
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (isPlaying) {
+        wasPlayingBeforeHidden = true;
+        toggleMusic(false);
+      }
+    } else {
+      if (wasPlayingBeforeHidden) {
+        toggleMusic(true);
+        wasPlayingBeforeHidden = false;
+      }
+    }
+  });
+
+  window.addEventListener('pagehide', () => {
+    if (isPlaying) {
+      wasPlayingBeforeHidden = true;
+      toggleMusic(false);
+    }
+  });
+
   const openBtn = document.getElementById('openInvitationBtn');
   const envelopeScreen = document.getElementById('envelope-screen');
   const mainContent = document.getElementById('main-invitation-content');
