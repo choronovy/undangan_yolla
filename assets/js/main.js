@@ -45,11 +45,32 @@
     bar.style.opacity = '0.85';
   });
 
-  function toggleMusic(playState) {
+  function pauseMusic() {
     if (!audio) return;
+    try {
+      audio.pause();
+    } catch (e) {
+      console.warn('Audio pause error:', e);
+    }
+    isPlaying = false;
+    if (musicToggleBtn) {
+      musicToggleBtn.classList.add('opacity-60');
+      musicToggleBtn.classList.remove('opacity-100');
+    }
+    musicBars.forEach(bar => {
+      bar.style.animationPlayState = 'paused';
+      bar.style.opacity = '0.7';
+    });
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState = 'paused';
+    }
+  }
 
-    if (playState === true || (playState === undefined && audio.paused)) {
-      audio.play().then(() => {
+  function playMusic() {
+    if (!audio) return;
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
         isPlaying = true;
         if (musicToggleBtn) {
           musicToggleBtn.classList.remove('opacity-60');
@@ -59,20 +80,20 @@
           bar.style.animationPlayState = 'running';
           bar.style.opacity = '1';
         });
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'playing';
+        }
       }).catch((err) => {
         console.warn('Autoplay dicegah oleh browser:', err);
       });
+    }
+  }
+
+  function toggleMusic(playState) {
+    if (playState === true || (playState === undefined && audio && audio.paused)) {
+      playMusic();
     } else {
-      audio.pause();
-      isPlaying = false;
-      if (musicToggleBtn) {
-        musicToggleBtn.classList.add('opacity-60');
-        musicToggleBtn.classList.remove('opacity-100');
-      }
-      musicBars.forEach(bar => {
-        bar.style.animationPlayState = 'paused';
-        bar.style.opacity = '0.7';
-      });
+      pauseMusic();
     }
   }
 
@@ -82,29 +103,89 @@
     });
   }
 
-  // Otomatis hentikan musik saat pengguna keluar dari browser / ganti tab / minimize / kunci layar HP
-  let wasPlayingBeforeHidden = false;
+  // =========================================================================
+  // KONTROL OTOMATIS: HENTIKAN MUSIK KETIKA KELUAR KE WHATSAPP / APLIKASI LAIN
+  // =========================================================================
+  let wasPlaying = false;
 
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      if (isPlaying) {
-        wasPlayingBeforeHidden = true;
-        toggleMusic(false);
-      }
-    } else {
-      if (wasPlayingBeforeHidden) {
-        toggleMusic(true);
-        wasPlayingBeforeHidden = false;
-      }
-    }
-  });
-
-  window.addEventListener('pagehide', () => {
+  function handleExit() {
     if (isPlaying) {
-      wasPlayingBeforeHidden = true;
-      toggleMusic(false);
+      wasPlaying = true;
+      pauseMusic();
+    }
+  }
+
+  function handleReturn() {
+    if (wasPlaying && !document.hidden && document.visibilityState === 'visible') {
+      setTimeout(() => {
+        if (!document.hidden && document.visibilityState === 'visible') {
+          playMusic();
+          wasPlaying = false;
+        }
+      }, 350);
+    }
+  }
+
+  // 1. Visibilitychange (berpindah tab / minimize / kunci layar)
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || document.visibilityState !== 'visible') {
+      handleExit();
+    } else {
+      handleReturn();
     }
   });
+
+  // 2. Window Blur (fokus berpindah ke WhatsApp / status bar / aplikasi lain)
+  window.addEventListener('blur', () => {
+    handleExit();
+  });
+
+  // 3. Window Focus (kembali membuka browser undangan)
+  window.addEventListener('focus', () => {
+    handleReturn();
+  });
+
+  // 4. Page Hide (kembali dari in-app browser ke chat WhatsApp)
+  window.addEventListener('pagehide', () => {
+    handleExit();
+  });
+
+  // 5. Beforeunload & Unload (keluar atau menutup halaman)
+  window.addEventListener('beforeunload', () => {
+    handleExit();
+  });
+  window.addEventListener('unload', () => {
+    handleExit();
+  });
+
+  // 6. Freeze (Android Page Lifecycle)
+  document.addEventListener('freeze', () => {
+    handleExit();
+  });
+
+  // 7. Klik link eksternal (Buka Maps, Kirim WhatsApp, Instagram, dll)
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href^="http"], a[href^="https"], a[href^="whatsapp:"], a[href^="intent:"]');
+    if (link && link.target === '_blank') {
+      handleExit();
+    }
+  });
+
+  // 8. Integrasi MediaSession (Pemberitahuan kontrol pemutar musik di notifikasi Android)
+  if ('mediaSession' in navigator) {
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: 'Bermuara',
+        artist: 'Rizky Febian & Mahalini',
+        album: 'The Wedding of Rudi & Yola'
+      });
+      navigator.mediaSession.setActionHandler('play', () => playMusic());
+      navigator.mediaSession.setActionHandler('pause', () => pauseMusic());
+      navigator.mediaSession.setActionHandler('stop', () => pauseMusic());
+    } catch (e) {
+      console.warn('MediaSession init error:', e);
+    }
+  }
 
   const openBtn = document.getElementById('openInvitationBtn');
   const envelopeScreen = document.getElementById('envelope-screen');
