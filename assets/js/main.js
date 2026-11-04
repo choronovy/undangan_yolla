@@ -1,5 +1,5 @@
 /**
- * Undangan Digital Elegan - Rudi & Yolla
+ * Undangan Digital Elegan - Rudi & Yola
  * Script Utama: Amplop, Countdown, Auto-Update Lokasi 27/29 Nov, Musik, & Live Guestbook JSON
  */
 
@@ -185,7 +185,7 @@
       if (heroCountdownLabel) heroCountdownLabel.textContent = 'Menuju Resepsi (29 Nov 2026)';
 
       if (calendarBtn) {
-        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Resepsi+Pernikahan+Rudi+%26+Yolla+(Sesi+2)&dates=20261129T030000Z/20261129T090000Z&details=Resepsi+Pernikahan+Rudi+Rusyandi+%26+Yolla+Sri+Nur+Juwita+Sesi+2&location=Kp.+Sindangelet+Jl.+Raya+Cisayong+No.184,+Sukaraharja,+Cisayong,+Kabupaten+Tasikmalaya";
+        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Resepsi+Pernikahan+Rudi+%26+Yola+(Sesi+2)&dates=20261129T030000Z/20261129T090000Z&details=Resepsi+Pernikahan+Rudi+Rusyandi+%26+Yola+Sri+Nur+Juwita+Sesi+2&location=Kp.+Sindangelet+Jl.+Raya+Cisayong+No.184,+Sukaraharja,+Cisayong,+Kabupaten+Tasikmalaya";
       }
     } else {
       // State: Sebelum 27 November 2026 -> Fokus Acara 27 November 2026
@@ -216,7 +216,7 @@
       }
 
       if (calendarBtn) {
-        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Pernikahan+Rudi+%26+Yolla&dates=20261127T010000Z/20261127T080000Z&details=Akad+dan+Resepsi+Pernikahan+Rudi+Rusyandi+%26+Yolla+Sri+Nur+Juwita&location=Rancageneng+2,+Sukajaya,+Kec.+Bungursari,+Kota+Tasikmalaya";
+        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Pernikahan+Rudi+%26+Yola&dates=20261127T010000Z/20261127T080000Z&details=Akad+dan+Resepsi+Pernikahan+Rudi+Rusyandi+%26+Yola+Sri+Nur+Juwita&location=Rancageneng+2,+Sukajaya,+Kec.+Bungursari,+Kota+Tasikmalaya";
       }
     }
   }
@@ -883,7 +883,7 @@
     function openLightbox(src, caption) {
       lightboxImg.src = src;
       if (lightboxCaption) {
-        lightboxCaption.textContent = caption || 'Rudi & Yolla';
+        lightboxCaption.textContent = caption || 'Rudi & Yola';
       }
       lightbox.classList.add('active');
       document.body.style.overflow = 'hidden';
@@ -964,14 +964,47 @@
     if (copyEl) copyEl.setAttribute('data-account', address);
   }
 
-  // Simpan Jadwal ke Kalender HP / Device (.ics universal)
+  // Simpan Jadwal ke Kalender HP / Device (Modal Pilihan Kalender)
   function setupDeviceCalendarButton() {
     const btnDeviceCal = document.getElementById('btn-save-device-calendar');
-    if (!btnDeviceCal) return;
+    const calModal = document.getElementById('calendar-modal');
+    const closeBtn = document.getElementById('close-calendar-modal');
+    if (!btnDeviceCal || !calModal) return;
 
-    btnDeviceCal.addEventListener('click', () => {
-      if (typeof showToast === 'function') {
-        showToast('Menambahkan jadwal ke Kalender perangkat Anda...');
+    const openModal = () => {
+      calModal.classList.remove('opacity-0', 'pointer-events-none');
+      const modalBox = calModal.querySelector('div');
+      if (modalBox) {
+        modalBox.classList.remove('scale-95');
+        modalBox.classList.add('scale-100');
+      }
+    };
+
+    const closeModal = () => {
+      calModal.classList.add('opacity-0', 'pointer-events-none');
+      const modalBox = calModal.querySelector('div');
+      if (modalBox) {
+        modalBox.classList.remove('scale-100');
+        modalBox.classList.add('scale-95');
+      }
+    };
+
+    btnDeviceCal.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal();
+    });
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeModal);
+    }
+
+    calModal.addEventListener('click', (e) => {
+      if (e.target === calModal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !calModal.classList.contains('pointer-events-none')) {
+        closeModal();
       }
     });
   }
@@ -1071,7 +1104,7 @@
     ctx.fillStyle = '#1d3d55';
     ctx.font = 'bold 36px "Playfair Display", Georgia, serif';
     ctx.letterSpacing = '1px';
-    ctx.fillText('Rudi & Yolla', width / 2, 120);
+    ctx.fillText('Rudi & Yola', width / 2, 120);
 
     // Badge VIP ACCESS
     ctx.fillStyle = '#c59b27';
@@ -1161,13 +1194,13 @@
 
     ctx.fillStyle = '#c59b27';
     ctx.font = '600 10px "Plus Jakarta Sans", sans-serif';
-    ctx.fillText('SAVE THE DATE • THE WEDDING OF RUDI & YOLLA', width / 2, bottomY + 125);
+    ctx.fillText('SAVE THE DATE • THE WEDDING OF RUDI & YOLA', width / 2, bottomY + 125);
 
     // Download trigger
     try {
       const link = document.createElement('a');
       const cleanFileName = guestName.replace(/[^a-zA-Z0-9]/g, '_');
-      link.download = `E-Ticket_Rudi_Yolla_${cleanFileName}.png`;
+      link.download = `E-Ticket_Rudi_Yola_${cleanFileName}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
 
