@@ -815,6 +815,38 @@
       }
     }
 
+    // Smart auto-hide pada bottom floating dock saat scroll ke bawah agar konten tidak tertutup/numpuk
+    const bottomDock = document.getElementById('bottom-dock-nav');
+    let lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+    function handleDockVisibility() {
+      if (!bottomDock || bottomDock.classList.contains('hidden-dock')) return;
+      if (isNavClicking) {
+        bottomDock.classList.remove('dock-hidden');
+        return;
+      }
+
+      const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollDiff = currentScrollY - lastScrollY;
+
+      // Scroll ke bawah: sembunyikan dock dengan mulus agar tidak menutupi isi kartu
+      if (scrollDiff > 6 && currentScrollY > 160) {
+        bottomDock.classList.add('dock-hidden');
+      } else if (scrollDiff < -5 || currentScrollY < 100) {
+        // Scroll ke atas atau kembali ke atas: munculkan kembali dock
+        bottomDock.classList.remove('dock-hidden');
+      }
+
+      // Pastikan tetap muncul jika sudah di ujung bawah halaman
+      const windowHeight = window.innerHeight;
+      const scrollHeight = document.documentElement.scrollHeight;
+      if (windowHeight + currentScrollY >= scrollHeight - 80) {
+        bottomDock.classList.remove('dock-hidden');
+      }
+
+      lastScrollY = currentScrollY;
+    }
+
     // Handle klik pada tombol dock nav dengan scroll lock (agar tidak dioverwrite saat animasi smooth scroll)
     navLinks.forEach((link) => {
       link.addEventListener('click', function (e) {
@@ -823,12 +855,14 @@
         const targetEl = document.getElementById(targetId);
         if (targetEl) {
           isNavClicking = true;
+          if (bottomDock) bottomDock.classList.remove('dock-hidden');
           setActiveTab(targetId);
 
           if (navClickTimeout) clearTimeout(navClickTimeout);
           navClickTimeout = setTimeout(() => {
             isNavClicking = false;
             setActiveTab(targetId);
+            if (bottomDock) bottomDock.classList.remove('dock-hidden');
           }, 850);
 
           const headerOffset = 15;
@@ -843,6 +877,7 @@
     });
 
     window.addEventListener('scroll', () => {
+      handleDockVisibility();
       if (scrollTimeout) cancelAnimationFrame(scrollTimeout);
       scrollTimeout = requestAnimationFrame(updateActiveOnScroll);
     }, { passive: true });

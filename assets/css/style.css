@@ -75,12 +75,18 @@ html, body {
   justify-content: center;
   padding: 0 0.875rem;
   pointer-events: none;
-  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
 }
 
-.floating-dock-nav.hidden-dock {
-  transform: translateY(120%);
-  opacity: 0;
+.floating-dock-nav.hidden-dock,
+.floating-dock-nav.dock-hidden {
+  transform: translateY(140%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+section[id] {
+  scroll-margin-top: 1.5rem;
 }
 
 .floating-dock-inner {
