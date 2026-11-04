@@ -843,8 +843,8 @@
           }
         });
       }, {
-        threshold: 0.05,
-        rootMargin: '0px 0px -10% 0px'
+        threshold: 0.01,
+        rootMargin: '60px 0px 60px 0px'
       });
 
       revealElements.forEach((el) => observer.observe(el));

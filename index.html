@@ -33,7 +33,7 @@
   <script src="assets/js/qrcode.min.js"></script>
 
   <!-- Custom CSS terpisah di assets/css/style.css -->
-  <link rel="stylesheet" href="assets/css/style.css?v=2.4">
+  <link rel="stylesheet" href="assets/css/style.css?v=2.5">
 </head>
 
 <body
@@ -629,17 +629,16 @@
                   <span class="material-symbols-outlined text-[18px]">location_on</span>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <h4 class="font-bold text-xs text-primary leading-tight">Rancageneng 2 (Geria Anugrah)</h4>
+                  <h4 class="font-bold text-xs text-primary leading-tight">Kedai kinan - Rancageneng 2 (Geria Anugrah)</h4>
                   <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed mt-1">
-                    Pintu masuk Perum Geria Anugrah, Jl. Rancageneng, Sukajaya, Kec. Bungursari, Kota Tasikmalaya, Jawa
-                    Barat 46151
+                    Pintu masuk Perum Geria Anugrah, Jl. Rancageneng, Sukajaya, Kec. Bungursari, Kota Tasikmalaya, Jawa Barat 46151
                   </p>
                 </div>
               </div>
 
-              <!-- Tombol Aksi 2 Kolom Sejajar Rapi (No wrapping of button text) -->
+              <!-- Tombol Aksi 2 Kolom Sejajar Rapi (Langsung ke Titik Kedai kinan) -->
               <div class="grid grid-cols-2 gap-2 pt-1 w-full">
-                <a href="https://maps.google.com/?q=Rancageneng+2+pintu+masuk+perum+geria+Anugrah+Jl+Rancageneng+Sukajaya+Bungursari+Tasikmalaya"
+                <a href="https://www.google.com/maps/place/Kedai+kinan/@-7.3108147,108.185475,17z/data=!3m1!4b1!4m6!3m5!1s0x2e6f5164ebf587d3:0x3f1df74232c55b09!8m2!3d-7.3108147!4d108.185475"
                   target="_blank" rel="noopener noreferrer"
                   class="flex items-center justify-center gap-1 px-2.5 py-2 bg-primary hover:bg-[#344f67] text-white rounded-xl text-[11px] sm:text-xs font-semibold shadow-xs transition-colors text-center whitespace-nowrap">
                   <span class="material-symbols-outlined text-[15px]">map</span>
@@ -647,7 +646,7 @@
                 </a>
                 <button type="button"
                   class="btn-copy-account flex items-center justify-center gap-1 px-2.5 py-2 bg-white hover:bg-slate-50 border border-primary/25 rounded-xl text-[11px] sm:text-xs text-slate-700 font-semibold transition-colors text-center shadow-xs cursor-pointer whitespace-nowrap"
-                  data-account="Rancageneng 2 (pintu masuk perum geria Anugrah), Jl. Rancageneng, Sukajaya, Kec. Bungursari, Kota Tasikmalaya, Jawa Barat 46151">
+                  data-account="Kedai kinan, Rancageneng 2 (pintu masuk perum geria Anugrah), Jl. Rancageneng, Sukajaya, Kec. Bungursari, Kota Tasikmalaya, Jawa Barat 46151">
                   <span class="material-symbols-outlined text-[15px]">content_copy</span>
                   <span>Salin Alamat</span>
                 </button>
@@ -1118,51 +1117,51 @@
   <script src="assets/js/supabase-config.js?v=1.0"></script>
 
   <!-- Main JavaScript terpisah di assets/js/main.js -->
-  <script src="assets/js/main.js?v=2.7"></script>
+  <script src="assets/js/main.js?v=2.8"></script>
 
   <!-- CALENDAR SELECTION MODAL (SIMPAN KE KALENDER HP MASING-MASING) -->
   <div id="calendar-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300" role="dialog" aria-modal="true" aria-labelledby="cal-modal-title">
-    <div class="relative w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl border border-primary/10 text-center transform scale-95 transition-all duration-300">
+    <div class="relative w-full max-w-sm bg-white rounded-3xl p-5 sm:p-6 shadow-2xl border border-primary/10 text-center transform scale-95 transition-all duration-300 max-h-[90vh] overflow-y-auto">
       <!-- Close button -->
       <button id="close-calendar-modal" type="button" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer" aria-label="Tutup">
         <span class="material-symbols-outlined text-[18px]">close</span>
       </button>
 
-      <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#cbe6ff] to-[#eaf2fb] text-primary flex items-center justify-center mx-auto mb-3.5 shadow-sm">
+      <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#cbe6ff] to-[#eaf2fb] text-primary flex items-center justify-center mx-auto mb-3 shadow-sm">
         <span class="material-symbols-outlined text-[26px]">calendar_month</span>
       </div>
 
       <h3 id="cal-modal-title" class="font-serif text-lg font-bold text-[#1d3d55]">Simpan ke Kalender HP</h3>
-      <p class="text-xs text-slate-500 mt-1 mb-5">Pilih jadwal acara untuk langsung disimpan di kalender perangkat Anda:</p>
+      <p class="text-xs text-slate-500 mt-1 mb-4">Pilih jenis perangkat atau jadwal untuk langsung disimpan di kalender HP Anda:</p>
 
-      <div class="space-y-3 text-left">
-        <!-- Opsi 1: Akad Nikah (Google Calendar untuk HP Android / Google) -->
-        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Akad+Nikah+Rudi+%26+Yola&dates=20261127T010000Z/20261127T030000Z&details=Akad+Nikah+Pernikahan+Rudi+Rusyandi+%26+Yola+Sri+Nur+Juwita.+Waktu:+08.00+-+10.00+WIB.+Lokasi:+Rancageneng+2+(Geria+Anugrah),+Kota+Tasikmalaya.&location=Rancageneng+2+(Geria+Anugrah),+Jl.+Rancageneng,+Sukajaya,+Kec.+Bungursari,+Kota+Tasikmalaya" target="_blank" rel="noopener noreferrer"
+      <div class="space-y-2.5 text-left">
+        <!-- Opsi 1: HP Android (Google Calendar - Akad Nikah) -->
+        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Akad+Nikah+Rudi+%26+Yola&dates=20261127T010000Z/20261127T030000Z&details=Akad+Nikah+Pernikahan+Rudi+Rusyandi+%26+Yola+Sri+Nur+Juwita.+Waktu:+08.00+-+10.00+WIB.+Lokasi:+Kedai+kinan+(Rancageneng+2),+Kota+Tasikmalaya.&location=Kedai+kinan,+Rancageneng+2+(pintu+masuk+perum+geria+Anugrah),+Jl.+Rancageneng,+Sukajaya,+Kec.+Bungursari,+Kota+Tasikmalaya" target="_blank" rel="noopener noreferrer"
           class="flex items-center gap-3 p-3 rounded-2xl bg-[#f4f8fc] hover:bg-[#e7f0fa] border border-primary/15 transition-all group cursor-pointer text-decoration-none">
-          <div class="w-10 h-10 rounded-xl bg-white text-primary flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-105 transition-transform">
-            <span class="material-symbols-outlined text-[22px] text-primary">event</span>
+          <div class="w-10 h-10 rounded-xl bg-white text-emerald-600 flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-[22px]">android</span>
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-bold uppercase tracking-wider text-primary">Jumat, 27 Nov 2026</span>
-              <span class="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-full">Google Cal</span>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-full">HP Android</span>
             </div>
             <p class="text-xs font-bold text-[#1d3d55] truncate">Akad Nikah (08.00 - 10.00 WIB)</p>
-            <p class="text-[11px] text-slate-500 truncate">Rancageneng 2, Tasikmalaya</p>
+            <p class="text-[11px] text-slate-500 truncate">Kedai kinan, Rancageneng 2</p>
           </div>
           <span class="material-symbols-outlined text-[18px] text-primary group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
         </a>
 
-        <!-- Opsi 2: Resepsi (Google Calendar untuk HP Android / Google) -->
+        <!-- Opsi 2: HP Android (Google Calendar - Resepsi) -->
         <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Resepsi+Pernikahan+Rudi+%26+Yola&dates=20261129T030000Z/20261129T080000Z&details=Resepsi+Pernikahan+Rudi+Rusyandi+%26+Yola+Sri+Nur+Juwita.+Waktu:+10.00+WIB+-+Selesai.+Lokasi:+Kp.+Sindangelet,+Jl.+Raya+Cisayong+No.184,+Tasikmalaya.&location=Kp.+Sindangelet,+Jl.+Raya+Cisayong+No.184,+RT.2/RW.3,+Sukaraharja,+Kec.+Cisayong,+Kabupaten+Tasikmalaya" target="_blank" rel="noopener noreferrer"
           class="flex items-center gap-3 p-3 rounded-2xl bg-[#f4f8fc] hover:bg-[#e7f0fa] border border-primary/15 transition-all group cursor-pointer text-decoration-none">
-          <div class="w-10 h-10 rounded-xl bg-white text-secondary flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-105 transition-transform">
-            <span class="material-symbols-outlined text-[22px] text-secondary">celebration</span>
+          <div class="w-10 h-10 rounded-xl bg-white text-blue-600 flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-[22px]">celebration</span>
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-bold uppercase tracking-wider text-secondary">Minggu, 29 Nov 2026</span>
-              <span class="text-[10px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-full">Google Cal</span>
+              <span class="text-[10px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-full">HP Android</span>
             </div>
             <p class="text-xs font-bold text-[#1d3d55] truncate">Resepsi (10.00 WIB - Selesai)</p>
             <p class="text-[11px] text-slate-500 truncate">Kp. Sindangelet, Cisayong</p>
@@ -1170,7 +1169,24 @@
           <span class="material-symbols-outlined text-[18px] text-primary group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
         </a>
 
-        <!-- Opsi 3: Apple Calendar (Untuk iPhone / iPad) -->
+        <!-- Opsi 3: Semua HP Android (Buka di Kalender Bawaan Samsung, Oppo, Xiaomi, Vivo dll) -->
+        <a href="wedding-rudi-yola.ics" target="_blank"
+          class="flex items-center gap-3 p-3 rounded-2xl bg-amber-50/70 hover:bg-amber-100/80 border border-amber-200 transition-all group cursor-pointer text-decoration-none">
+          <div class="w-10 h-10 rounded-xl bg-white text-amber-700 flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-[22px]">phone_android</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800">Samsung / Oppo / Xiaomi / Vivo</span>
+              <span class="text-[10px] bg-amber-200 text-amber-900 font-semibold px-2 py-0.5 rounded-full">Semua Android</span>
+            </div>
+            <p class="text-xs font-bold text-amber-950">Aplikasi Kalender Bawaan HP</p>
+            <p class="text-[11px] text-amber-800/80">Langsung tersimpan di kalender bawaan HP Anda</p>
+          </div>
+          <span class="material-symbols-outlined text-[18px] text-amber-800 group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+        </a>
+
+        <!-- Opsi 4: Khusus Pengguna iPhone / iPad / Mac (Kalender Apple) -->
         <a href="wedding-rudi-yola.ics" target="_blank"
           class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all group cursor-pointer text-decoration-none">
           <div class="w-10 h-10 rounded-xl bg-white text-slate-700 flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-105 transition-transform">
@@ -1179,17 +1195,17 @@
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">iPhone / iPad / Mac</span>
-              <span class="text-[10px] bg-slate-200 text-slate-700 font-semibold px-2 py-0.5 rounded-full">Apple Cal</span>
+              <span class="text-[10px] bg-slate-200 text-slate-700 font-semibold px-2 py-0.5 rounded-full">Khusus Apple</span>
             </div>
             <p class="text-xs font-bold text-slate-800">Kalender Apple (Semua Acara)</p>
-            <p class="text-[11px] text-slate-500">Otomatis buka Kalender bawaan iOS</p>
+            <p class="text-[11px] text-slate-500">Otomatis buka lembar Kalender asli iPhone</p>
           </div>
           <span class="material-symbols-outlined text-[18px] text-slate-600 group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
         </a>
       </div>
 
-      <p class="text-[10px] text-slate-400 mt-4 leading-relaxed">
-        *Klik salah satu tombol di atas untuk membuka aplikasi kalender di HP Anda secara otomatis.
+      <p class="text-[10px] text-slate-400 mt-3.5 leading-relaxed">
+        *Klik salah satu pilihan di atas untuk langsung menyimpan jadwal acara ke kalender HP Anda secara otomatis.
       </p>
     </div>
   </div>

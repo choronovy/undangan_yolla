@@ -371,32 +371,32 @@ html, body {
   pointer-events: none;
 }
 
-/* 2. SCROLL REVEAL UTILITIES (AOS STYLE) - SLOW & LUXURIOUS FADE-IN */
+/* 2. SCROLL REVEAL UTILITIES (AOS STYLE) - CEPAT, MULUS & RESPONSIF (TANPA DELAY) */
 .reveal-init {
   opacity: 0 !important;
-  transform: translateY(28px);
-  transition: opacity 1.35s cubic-bezier(0.22, 1, 0.36, 1), transform 1.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  transform: translateY(16px);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
   will-change: opacity, transform;
 }
 
 .reveal-init.reveal-up {
-  transform: translateY(28px);
+  transform: translateY(16px);
 }
 
 .reveal-init.reveal-down {
-  transform: translateY(-28px);
+  transform: translateY(-16px);
 }
 
 .reveal-init.reveal-left {
-  transform: translateX(-32px);
+  transform: translateX(-18px);
 }
 
 .reveal-init.reveal-right {
-  transform: translateX(32px);
+  transform: translateX(18px);
 }
 
 .reveal-init.reveal-zoom {
-  transform: scale(0.93) translateY(18px);
+  transform: scale(0.96) translateY(10px);
 }
 
 .reveal-init.reveal-fade {
@@ -408,12 +408,12 @@ html, body {
   transform: translateY(0) translateX(0) scale(1) !important;
 }
 
-/* Stagger delay classes - Slow & Harmonic */
-.delay-100 { transition-delay: 0.15s !important; }
-.delay-200 { transition-delay: 0.3s !important; }
-.delay-300 { transition-delay: 0.45s !important; }
-.delay-400 { transition-delay: 0.6s !important; }
-.delay-500 { transition-delay: 0.75s !important; }
+/* Stagger delay classes - Cepat & Responsif */
+.delay-100 { transition-delay: 0.05s !important; }
+.delay-200 { transition-delay: 0.1s !important; }
+.delay-300 { transition-delay: 0.15s !important; }
+.delay-400 { transition-delay: 0.2s !important; }
+.delay-500 { transition-delay: 0.25s !important; }
 
 /* 3. INTERACTIVE CARD HOVER & ACTIVE LIFT */
 .interactive-card {
