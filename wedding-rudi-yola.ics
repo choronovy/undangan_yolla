@@ -11,8 +11,8 @@ DTSTAMP:20261102T140000Z
 DTSTART:20261127T010000Z
 DTEND:20261127T070000Z
 SUMMARY:Pernikahan Rudi & Yola (Akad Nikah)
-DESCRIPTION:Akad Nikah (08.00 - 10.00 WIB) Pernikahan Rudi Rusyandi & Yola Sri Nur Juwita di Kedai kinan, Rancageneng 2.
-LOCATION:Kedai kinan, Rancageneng 2 (pintu masuk perum geria Anugrah), Jl. Rancageneng, Sukajaya, Kec. Bungursari, Kota Tasikmalaya, Jawa Barat 46151
+DESCRIPTION:Akad Nikah (08.00 - 10.00 WIB) Pernikahan Rudi Rusyandi & Yola Sri Nur Juwita.
+LOCATION:Rancageneng 2 (pintu masuk perum geria Anugrah), Jl. Rancageneng, Sukajaya, Kec. Bungursari, Kota Tasikmalaya, Jawa Barat 46151
 STATUS:CONFIRMED
 BEGIN:VALARM
 TRIGGER:-P1D
