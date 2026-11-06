@@ -865,25 +865,37 @@
 
       const baseUrl = getInvitationBaseUrl();
       let count = 0;
+      const newGuestsToInsert = [];
 
-      lines.forEach((line) => {
+      lines.forEach((line, idx) => {
         const fullName = line;
         const guestUrl = `${baseUrl}?to=${encodeURIComponent(fullName)}`;
-
-        allGuests.unshift({
-          id: 'guest_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+        const guestObj = {
+          id: 'guest_' + Date.now() + '_' + idx + '_' + Math.floor(Math.random() * 1000),
           name: fullName,
           phone: '',
-          category: category,
+          category: 'Tamu',
           url: guestUrl,
           created_at: getLocalTimestamp()
-        });
+        };
+
+        allGuests.unshift(guestObj);
+        newGuestsToInsert.push(guestObj);
         count++;
       });
 
       try {
         localStorage.setItem(GUESTS_STORAGE_KEY, JSON.stringify(allGuests));
       } catch (e) {}
+
+      // Simpan juga ke Supabase Cloud
+      if (typeof supabaseClient !== 'undefined' && supabaseClient && newGuestsToInsert.length > 0) {
+        supabaseClient
+          .from('guests')
+          .insert(newGuestsToInsert)
+          .then(() => {})
+          .catch((e) => console.warn('[Supabase Bulk Guest Insert Error]', e));
+      }
 
       if (badgeTotalGuests) badgeTotalGuests.textContent = `${allGuests.length} Tamu Terdaftar`;
       if (statTotalGuests) statTotalGuests.textContent = allGuests.length;
