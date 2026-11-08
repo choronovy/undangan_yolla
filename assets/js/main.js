@@ -290,7 +290,7 @@
       if (heroCountdownLabel) heroCountdownLabel.textContent = 'Menuju Resepsi (29 Nov 2026)';
 
       if (calendarBtn) {
-        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Resepsi+Pernikahan+Rudi+%26+Yola+(Sesi+2)&dates=20261129T030000Z/20261129T090000Z&details=Resepsi+Pernikahan+Rudi+Rusyandi+%26+Yola+Sri+Nur+Juwita+Sesi+2&location=Kp.+Sindangelet+Jl.+Raya+Cisayong+No.184,+Sukaraharja,+Cisayong,+Kabupaten+Tasikmalaya";
+        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Resepsi+(Kumpul+Keluarga)+Rudi+%26+Yola&dates=20261129T030000Z/20261129T090000Z&details=Resepsi+(Kumpul+Keluarga)+Rudi+Rusyandi+%26+Yola+Sri+Nur+Juwita&location=Kp.+Sindangelet+Jl.+Raya+Cisayong+No.184,+Sukaraharja,+Cisayong,+Kabupaten+Tasikmalaya";
       }
     } else {
       // State: Sebelum 27 November 2026 -> Fokus Acara 27 November 2026
@@ -299,7 +299,7 @@
         const badgeEl = event27Card.querySelector('.event-badge');
         if (badgeEl) {
           badgeEl.className = 'event-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 whitespace-nowrap';
-          badgeEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> <span>Kumpul Keluarga</span>';
+          badgeEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> <span>Akad Nikah</span>';
         }
       }
 
@@ -312,7 +312,7 @@
       }
 
       if (countdownTargetText) {
-        countdownTargetText.textContent = 'Menuju Hari Akad & Resepsi (Jumat, 27 November 2026)';
+        countdownTargetText.textContent = 'Menuju Hari Akad Nikah (Jumat, 27 November 2026)';
       }
       if (heroCountdownLabel) heroCountdownLabel.textContent = 'Menuju Hari Bahagia (27 Nov 2026)';
 
@@ -321,7 +321,7 @@
       }
 
       if (calendarBtn) {
-        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Akad+Nikah+KUA+Bungursari+%26+Resepsi+Rudi+%26+Yola&dates=20261127T020000Z/20261127T080000Z&details=Akad+Nikah+KUA+Bungursari+(09.00+WIB)+dan+Resepsi+(Kumpul+Keluarga)+(10.00+WIB)+Rudi+Rusyandi+%26+Yola+Sri+Nur+Juwita&location=Rancageneng+2,+Sukajaya,+Kec.+Bungursari,+Kota+Tasikmalaya";
+        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Akad+Nikah+KUA+Bungursari+Rudi+%26+Yola&dates=20261127T020000Z/20261127T080000Z&details=Akad+Nikah+KUA+Bungursari+(09.00+WIB)+Rudi+Rusyandi+%26+Yola+Sri+Nur+Juwita&location=Rancageneng+2,+Sukajaya,+Kec.+Bungursari,+Kota+Tasikmalaya";
       }
     }
   }

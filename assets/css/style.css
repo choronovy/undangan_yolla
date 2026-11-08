@@ -77,21 +77,6 @@ html, body {
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
 }
 
-/* Portrait Zoom for Bride & Groom Arch Frames */
-.mempelai-portrait-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 12%;
-  transform: scale(1.65);
-  transform-origin: 50% 12%;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.group:hover .mempelai-portrait-img {
-  transform: scale(1.78);
-}
-
 .floating-dock-nav.hidden-dock {
   transform: translateY(120%);
   opacity: 0;
