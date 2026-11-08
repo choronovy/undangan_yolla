@@ -321,7 +321,7 @@
       }
 
       if (calendarBtn) {
-        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Pernikahan+Rudi+%26+Yola&dates=20261127T010000Z/20261127T080000Z&details=Akad+dan+Resepsi+Pernikahan+Rudi+Rusyandi+%26+Yola+Sri+Nur+Juwita&location=Rancageneng+2,+Sukajaya,+Kec.+Bungursari,+Kota+Tasikmalaya";
+        calendarBtn.href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Akad+Nikah+KUA+Bungursari+%26+Resepsi+Rudi+%26+Yola&dates=20261127T020000Z/20261127T080000Z&details=Akad+Nikah+KUA+Bungursari+(09.00+WIB)+dan+Resepsi+(Kumpul+Keluarga)+(10.00+WIB)+Rudi+Rusyandi+%26+Yola+Sri+Nur+Juwita&location=Rancageneng+2,+Sukajaya,+Kec.+Bungursari,+Kota+Tasikmalaya";
       }
     }
   }
